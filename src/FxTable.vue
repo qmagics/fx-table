@@ -6,7 +6,7 @@
 
     <div class="fx-table--body" :style="bodyStyle">
       <div class="fx-table--aside" :style="asideStyle" v-if="cOptions.aside" v-show="showAside">
-        <slot name="aside"></slot>
+        <slot name="aside"></slot> 
       </div>
 
       <div class="fx-table--main" :style="mainStyle">

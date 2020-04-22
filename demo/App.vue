@@ -31,7 +31,7 @@
         </template>
 
         <template #superQuery>
-          <el-form-item label="字段A">
+          <el-form-item label="字段A" prop="type">
             <el-select v-model="query.type" @change="$refs.table.refreshTable()">
               <el-option value="a" label="A1"></el-option>
               <el-option value="b" label="B"></el-option>
@@ -39,7 +39,7 @@
           </el-form-item>
           <el-form-item label="字段A">
             <el-select v-model="query.type" @change="$refs.table.refreshTable()">
-              <el-option value="a" label="A1"></el-option>
+              <el-option value="a" label="A1"> </el-option>
               <el-option value="b" label="B"></el-option>
             </el-select>
           </el-form-item>
