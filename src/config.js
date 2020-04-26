@@ -26,6 +26,10 @@ export const DEFAULT_OPTIONS = {
 
     singleSelect: false,
 
+    clickToSelect: false,
+
+    highlightCurrentRow: false,
+
     rowKey: '',
 
     api: '',

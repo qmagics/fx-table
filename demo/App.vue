@@ -7,6 +7,7 @@
         :options="options"
         :columns="columns"
         :query.sync="query"
+        @row-click="rowClick"
       >
         <template #aside>
           <!-- <el-row>
@@ -39,7 +40,7 @@
           </el-form-item>
           <el-form-item label="字段A">
             <el-select v-model="query.type" @change="$refs.table.refreshTable()">
-              <el-option value="a" label="A1"> </el-option>
+              <el-option value="a" label="A1"></el-option>
               <el-option value="b" label="B"></el-option>
             </el-select>
           </el-form-item>
@@ -75,16 +76,16 @@
           </el-form-item>
         </template>
 
-        <!-- <template #action>
-        <FxButton icon="el-icon-plus" category="dropdown">
-          操作
-          <template slot="items">
-            <FxButton icon="el-icon-plus" category="item" @click="query.key='Item1'">新增</FxButton>
-            <FxButton icon="el-icon-delete" category="item" @click="query.key='Item2'">删除</FxButton>
-          </template>
-        </FxButton>
-        <FxButton icon="el-icon-upload" type="success" plain category="button" round>导出</FxButton>
-        </template>-->
+        <template #action>
+          <el-checkbox v-model="options.singleSelect">单选</el-checkbox>
+          <FxButton icon="el-icon-plus" category="dropdown">
+            操作
+            <template slot="items">
+              <FxButton icon="el-icon-plus" category="item" @click.native="getSelected">获取选中项</FxButton>
+            </template>
+          </FxButton>
+          <!-- <FxButton icon="el-icon-upload" type="success" plain category="button" round>导出</FxButton> -->
+        </template>
       </FxTable>
     </div>
 
@@ -137,11 +138,15 @@ export default {
       data3: [],
 
       options: {
-        background:'#fff',
+        background: "#fff",
 
         size: "small",
 
         selectable: true,
+
+        clickToSelect: true,
+
+        singleSelect: true,
 
         showIndex: true,
 
@@ -175,8 +180,11 @@ export default {
         },
 
         // footer: true,
-        // header: true,
-        aside: true,
+        header: true,
+        headerProps:{
+          height:'20%'
+        },
+        aside: true
 
         // asideProps: {
         //   background: "#fcfcfc"
@@ -211,6 +219,16 @@ export default {
     //   });
     //   i++;
     // },500);
+  },
+
+  methods: {
+    getSelected() {
+      // const selected = this.$refs.table.getSelected();
+      console.log(this.$refs.table.selectedRows);
+    },
+    rowClick(row){
+      // console.log(row.name)
+    }
   }
 };
 </script>

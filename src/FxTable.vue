@@ -1,12 +1,13 @@
 <template>
   <div class="fx-table" :class="classes" :style="style">
     <div class="fx-table--header" v-if="cOptions.header" :style="headerStyle">
+      <pre>{{pagerModel}}</pre>
       <slot name="header"></slot>
     </div>
 
     <div class="fx-table--body" :style="bodyStyle">
       <div class="fx-table--aside" :style="asideStyle" v-if="cOptions.aside" v-show="showAside">
-        <slot name="aside"></slot> 
+        <slot name="aside"></slot>
       </div>
 
       <div class="fx-table--main" :style="mainStyle">
@@ -37,7 +38,6 @@
                 <i class="el-icon-arrow-down"></i>
               </FxButton>
               <slot name="action"></slot>
-              <!-- <FxButton icon="el-icon-search" v-if="$slots.query" @click="onSearchBtnClick">查询</FxButton> -->
               <FxButton @click="showAside=!showAside" icon="el-icon-caret-left"></FxButton>
 
               <FxButton
@@ -59,15 +59,19 @@
 
         <div class="fx-table--table" v-loading="loading" :style="tableStyle">
           <el-table
+            ref="table"
             :data="tableData"
             height="100%"
             :size="cOptions.size"
             :border="cOptions.border"
             :row-key="cOptions.rowKey"
             :default-sort="defaultSort"
+            :highlight-current-row="highlightCurrentRow"
             @sort-change="onSortChange"
-            @row-click="$emit('row-click')"
+            @row-click="onRowClick"
             @row-dblclick="$emit('row-dblclick')"
+            @selection-change="onSelectionChange"
+            @current-change="onCurrentChange"
           >
             <el-table-column
               width="50px"
@@ -176,7 +180,12 @@ export default {
         sizes: getCalcPagerSizes(pageSize, pagerSizes)
       },
 
-      loading: false
+      loading: false,
+
+      selected: {
+        rows: [],
+        row: null
+      }
     };
   },
 
@@ -221,6 +230,58 @@ export default {
   },
 
   computed: {
+    table() {
+      return this.$refs.table;
+    },
+
+    selectedRows: {
+      get() {
+        const { selectable, singleSelect } = this.cOptions;
+        if (selectable) {
+          if (singleSelect) {
+            return this.selected.row ? [this.selected.row] : [];
+          } else {
+            return this.selected.rows;
+          }
+        } else {
+          return [];
+        }
+      },
+      set(data) {
+        const { selectable, singleSelect } = this.cOptions;
+        if (selectable) {
+          if (singleSelect) {
+            this.selected.row = data;
+          } else {
+            this.selected.rows = data;
+          }
+        }
+      }
+    },
+
+    selectedRow: {
+      get() {
+        const { selectable, singleSelect } = this.cOptions;
+        if (selectable || singleSelect) {
+          return this.selected.row;
+        } else {
+          return null;
+        }
+      },
+      set(row) {
+        const { selectable, singleSelect } = this.cOptions;
+        if (selectable || singleSelect) {
+          this.selected.row = data;
+        }
+      }
+    },
+
+    highlightCurrentRow() {
+      const { selectable, singleSelect, highlightCurrentRow } = this.cOptions;
+
+      return (selectable && singleSelect) || highlightCurrentRow;
+    },
+
     cOptions: {
       get() {
         return merge.recursive(true, true, {}, DEFAULT_OPTIONS, this.options);
@@ -389,6 +450,27 @@ export default {
       this.refreshTable();
     },
 
+    //多选，选择项变更
+    onSelectionChange(selection) {
+      this.selectedRows = selection;
+    },
+
+    //单选，当前选中项变更
+    onCurrentChange(currentRow, oldCurrentRow) {
+      this.selectedRows = currentRow;
+    },
+
+    //当某一行被点击时会触发该事件
+    onRowClick(row, column, event) {
+      const { selectable, singleSelect, clickToSelect } = this.cOptions;
+
+      if (selectable && !singleSelect && clickToSelect) {
+        this.toggleRowSelection(row);
+      }
+
+      this.$emit("row-click", row, column, event);
+    },
+
     //获取数据
     async getData() {
       if (!this.api) return;
@@ -426,6 +508,46 @@ export default {
           this.getData();
         });
       }
+    },
+
+    //获取选中项
+    getSelected() {
+      return this.selectedRows;
+    },
+
+    //用于多选表格，清空用户的选择
+    clearSelection() {
+      this.table.clearSelection();
+    },
+
+    //用于多选表格，切换某一行的选中状态
+    toggleRowSelection(row, selected) {
+      this.table.toggleRowSelection(row, selected);
+    },
+
+    //用于多选表格，切换所有行的选中状态
+    toggleAllSelection() {
+      this.table.toggleAllSelection();
+    },
+
+    //用于可展开表格与树形表格，切换某一行的展开状态
+    toggleRowExpansion(row, expanded) {
+      this.table.toggleRowExpansion(row, expanded);
+    },
+
+    //用于单选表格，设定某一行为选中行,如果调用时不加参数，则会取消目前高亮行的选中状态
+    setCurrentRow(row) {
+      this.table.setCurrentRow(row);
+    },
+
+    //清空过滤条件,也可传入由columnKey组成的数组以清除指定列的过滤条件
+    clearFilter(columnKey) {
+      this.table.clearFilter(columnKey);
+    },
+
+    //对 Table 进行重新布局
+    doLayout() {
+      this.table.doLayout();
     }
   },
 

@@ -39,6 +39,8 @@
     .fx-table--aside{
       height: 100%;
       box-shadow: 2px 0 4px rgba(0,0,0, .1);
+      // transition: all .3s ease-in-out;
+      // overflow: hidden;
     }
 
     .fx-table--main {
@@ -84,11 +86,14 @@
         position: absolute;
         width:100%;
         height: auto;
+        max-height: 100%;
         z-index: 99;
         top:0;
         left:0;
         right:0;
-        background: yellowgreen;
+        // background: yellowgreen;
+        box-shadow: 2px 4px 6px rgba(0, 0, 0, 0.15);
+        overflow-y: auto;
       }
     
       .fx-table--table {

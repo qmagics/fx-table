@@ -99,7 +99,7 @@ export default {
 
   &.fx-searchbar--super {
     height: auto;
-    box-shadow: 2px 4px 6px rgba(0, 0, 0, 0.15);
+    // box-shadow: 2px 4px 6px rgba(0, 0, 0, 0.15);
 
     .super-content {
       background: #fff;
