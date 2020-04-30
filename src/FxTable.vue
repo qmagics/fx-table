@@ -430,12 +430,13 @@ export default {
 
     //翻页组件页码变更
     onPagerCurrentChange() {
-      this.refreshTable(false);
+        this.refreshTable(false);
     },
 
     //翻页组件每页数量变更
-    onPagerSizeChange() {
-      this.refreshTable();
+    onPagerSizeChange(val) {
+      // console.log("onPagerSizeChange", val);
+      // this.refreshTable();
     },
 
     //排序变更

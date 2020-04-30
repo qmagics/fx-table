@@ -86,12 +86,12 @@ export default {
     }
   },
   methods: {
-    sizeChange() {
-      this.$emit("size-change");
+    sizeChange(size) {
+      this.$emit("size-change", size);
     },
 
-    currentChange() {
-      this.$emit("current-change");
+    currentChange(current) {
+      this.$emit("current-change", current);
     },
 
     prevClick() {

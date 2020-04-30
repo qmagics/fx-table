@@ -10,7 +10,7 @@ export const DEFAULT_OPTIONS = {
 
     indexTitle: "#",
 
-    pageNumber: 1,
+    pageIndex: 1,
 
     pageSize: 10,
 

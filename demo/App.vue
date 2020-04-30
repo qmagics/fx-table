@@ -9,29 +9,17 @@
         :query.sync="query"
         @row-click="rowClick"
       >
-        <template #aside>
-          <!-- <el-row>
-            <el-col :span="20" :offset="2">
-              <br />
-              <el-card>的观点</el-card>
-            </el-col>
-          </el-row>-->
+        <!-- <template #aside>
           ASIDE
-        </template>
+        </template> -->
 
-        <template #query>
-          <!-- <el-form-item>
-          <el-select v-model="query.type" @change="$refs.table.refreshTable()">
-            <el-option value="a" label="A"></el-option>
-            <el-option value="b" label="B"></el-option>
-          </el-select>
-          </el-form-item>-->
+        <!-- <template #query>
           <el-form-item>
             <el-input v-model="query.key" @keyup.native.enter="$refs.table.refreshTable()"></el-input>
           </el-form-item>
-        </template>
+        </template> -->
 
-        <template #superQuery>
+        <!-- <template #superQuery>
           <el-form-item label="字段A" prop="type">
             <el-select v-model="query.type" @change="$refs.table.refreshTable()">
               <el-option value="a" label="A1"></el-option>
@@ -74,9 +62,9 @@
               <el-option value="b" label="B"></el-option>
             </el-select>
           </el-form-item>
-        </template>
+        </template> -->
 
-        <template #action>
+        <!-- <template #action>
           <el-checkbox v-model="options.singleSelect">单选</el-checkbox>
           <FxButton icon="el-icon-plus" category="dropdown">
             操作
@@ -84,8 +72,7 @@
               <FxButton icon="el-icon-plus" category="item" @click.native="getSelected">获取选中项</FxButton>
             </template>
           </FxButton>
-          <!-- <FxButton icon="el-icon-upload" type="success" plain category="button" round>导出</FxButton> -->
-        </template>
+        </template> -->
       </FxTable>
     </div>
 
@@ -138,17 +125,17 @@ export default {
       data3: [],
 
       options: {
-        background: "#fff",
+        // background: "#fff",
 
-        size: "small",
+        // size: "small",
 
-        selectable: true,
+        // selectable: true,
 
-        clickToSelect: true,
+        // clickToSelect: true,
 
-        singleSelect: true,
+        // singleSelect: true,
 
-        showIndex: true,
+        // showIndex: true,
 
         // height: 'calc(100% - 20px)',
 
@@ -166,7 +153,7 @@ export default {
 
         // order: "asc",
 
-        pageSize: 10,
+        // pageSize: 10,
 
         // border: false,
 
@@ -180,11 +167,11 @@ export default {
         },
 
         // footer: true,
-        header: true,
-        headerProps:{
-          height:'20%'
-        },
-        aside: true
+        // header: true,
+        // headerProps:{
+        //   height:'20%'
+        // },
+        // aside: true
 
         // asideProps: {
         //   background: "#fcfcfc"
@@ -242,6 +229,7 @@ body {
 
 .box {
   width: 70%;
+  min-width:600px;
   height: 500px;
   border: 1px solid #eee;
   border-radius: 4px;
