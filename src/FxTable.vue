@@ -1,8 +1,18 @@
 <template>
   <div class="fx-table" :class="classes" :style="style">
-    <div class="fx-table--header" v-if="cOptions.header" :style="headerStyle">
-      <p>{{showAside}}</p>
-      <slot name="header"></slot>
+    <div
+      class="fx-table--header"
+      :class="cOptions.headerProps.classes"
+      v-if="cOptions.header"
+      :style="headerStyle"
+    >
+      <slot name="header">
+        <p>
+          showAside:{{showAside}}
+          &nbsp;&nbsp;
+          fullScreen:{{fullScreen}}
+        </p>
+      </slot>
     </div>
 
     <div class="fx-table--body" :style="bodyStyle">
@@ -10,7 +20,11 @@
         <div class="fx-table--aside-inner" v-show="showAside">
           <slot name="aside"></slot>
         </div>
-        <div class="fx-table--aside-toggle" v-if="cOptions.asideProps.showToggle" @click="toggleAside()">
+        <div
+          class="fx-table--aside-toggle"
+          v-if="cOptions.asideProps.showToggle"
+          @click="toggleAside()"
+        >
           <i class="icon el-icon-caret-right"></i>
         </div>
       </div>
@@ -45,7 +59,7 @@
               <slot name="action"></slot>
 
               <FxButton
-                v-if="fullScreen"
+                v-if="cOptions.fullScreenProps.showToggle"
                 type="text"
                 @click="fullScreen=!fullScreen"
                 :icon="fullScreen?'el-icon-copy-document':'el-icon-full-screen'"
@@ -148,11 +162,12 @@ export default {
       sort,
       order,
       aside,
-      asideProps
+      asideProps,
+      fullScreen
     } = merge.recursive(true, {}, DEFAULT_OPTIONS, this.options);
 
     return {
-      fullScreen: false,
+      fullScreen: fullScreen,
 
       showAside: asideProps.show,
 

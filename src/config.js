@@ -44,13 +44,20 @@ export const DEFAULT_OPTIONS = {
 
     sort: "",
 
+    fullScreen: false,
+
+    fullScreenProps: {
+        showToggle: true
+    },
+
     //是否有头部
     header: false,
 
     //header属性
     headerProps: {
+        classes: '',
         height: '50px',
-        background: '#f3f3f3'
+        background: ''
     },
 
     //是否有侧边栏

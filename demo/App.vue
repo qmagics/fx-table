@@ -167,10 +167,11 @@ export default {
         // footer: true,
 
         header: true,
-        // headerProps:{
-        // height:'20%',
-        // background:'#f3f3f3'
-        // },
+        headerProps:{
+          // height:'10%',
+          background:'#f3f3f3',
+          classes:'demo-header'
+        },
 
         aside: true,
         asideProps: {
@@ -242,5 +243,9 @@ body {
 .container {
   width: 100%;
   height: 100%;
+}
+
+.demo-header{
+  text-align: center;
 }
 </style>
