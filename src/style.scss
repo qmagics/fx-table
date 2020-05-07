@@ -8,6 +8,9 @@
   &.is--show-aside{
     .fx-table--body{
       .fx-table--aside{
+        .fx-table--aside-toggle{
+          right:0;
+        }
       }
       .fx-table--main{
 
@@ -30,7 +33,6 @@
   
 
   .fx-table--header {
-    background: #f3f3f3;
     overflow: hidden;
   }
 
@@ -39,8 +41,38 @@
     .fx-table--aside{
       height: 100%;
       box-shadow: 2px 0 4px rgba(0,0,0, .1);
-      // transition: all .3s ease-in-out;
-      // overflow: hidden;
+      position: relative;
+      transition: all .2s ease-in-out;
+
+      .fx-table--aside-inner{
+
+      }
+      .fx-table--aside-toggle{
+        width:18px;
+        height: 44px;
+        background: #f3f3f3;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: absolute;
+        top:50%;
+        right:-18px;
+        transform: translate3d(0,-50%,0);
+        z-index: 2;
+        box-shadow: 1px 1px 2px rgba(0,0,0, .1);
+        // border:1px solid #ddd;
+        border-right:0;
+        cursor: pointer;
+        transition: all .1s ease-in-out;
+
+        &:hover{
+          background: #eee;
+        }
+        .icon{
+          color:#888;
+          text-align: center;
+        }
+      }
     }
 
     .fx-table--main {
@@ -116,6 +148,5 @@
   }
 
   .fx-table--footer {
-    background: #f3f3f3;
   }
 }

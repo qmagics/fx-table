@@ -1,13 +1,18 @@
 <template>
   <div class="fx-table" :class="classes" :style="style">
     <div class="fx-table--header" v-if="cOptions.header" :style="headerStyle">
-      <pre>{{pagerModel}}</pre>
+      <p>{{showAside}}</p>
       <slot name="header"></slot>
     </div>
 
     <div class="fx-table--body" :style="bodyStyle">
-      <div class="fx-table--aside" :style="asideStyle" v-if="cOptions.aside" v-show="showAside">
-        <slot name="aside"></slot>
+      <div class="fx-table--aside" :style="asideStyle" v-if="cOptions.aside">
+        <div class="fx-table--aside-inner" v-show="showAside">
+          <slot name="aside"></slot>
+        </div>
+        <div class="fx-table--aside-toggle" v-if="cOptions.asideProps.showToggle" @click="toggleAside()">
+          <i class="icon el-icon-caret-right"></i>
+        </div>
       </div>
 
       <div class="fx-table--main" :style="mainStyle">
@@ -38,9 +43,9 @@
                 <i class="el-icon-arrow-down"></i>
               </FxButton>
               <slot name="action"></slot>
-              <FxButton @click="showAside=!showAside" icon="el-icon-caret-left"></FxButton>
 
               <FxButton
+                v-if="fullScreen"
                 type="text"
                 @click="fullScreen=!fullScreen"
                 :icon="fullScreen?'el-icon-copy-document':'el-icon-full-screen'"
@@ -312,10 +317,11 @@ export default {
 
     headerStyle() {
       const { headerProps } = this.cOptions;
-      const { height } = headerProps;
+      const { height, background } = headerProps;
 
       return {
-        height: getCssNumber(height)
+        height: getCssNumber(height),
+        background
       };
     },
 
@@ -333,7 +339,7 @@ export default {
     asideStyle() {
       const { width, background } = this.cOptions.asideProps;
       return {
-        width: getCssNumber(width),
+        width: this.showAside ? getCssNumber(width) : 0,
         background: background
       };
     },
@@ -381,10 +387,11 @@ export default {
 
     footerStyle() {
       const { footerProps } = this.cOptions;
-      const { height } = footerProps;
+      const { height, background } = footerProps;
 
       return {
-        height: getCssNumber(height)
+        height: getCssNumber(height),
+        background
       };
     },
 
@@ -394,6 +401,8 @@ export default {
         ...this.sortModel,
         ...this.searchModel
       };
+
+      // console.log('pagerModel',this.pagerModel)
 
       return this.method.toLowerCase() === "get"
         ? {
@@ -430,13 +439,13 @@ export default {
 
     //翻页组件页码变更
     onPagerCurrentChange() {
-        this.refreshTable(false);
+      this.refreshTable(false);
     },
 
     //翻页组件每页数量变更
     onPagerSizeChange(val) {
       // console.log("onPagerSizeChange", val);
-      // this.refreshTable();
+      this.refreshTable();
     },
 
     //排序变更
@@ -498,16 +507,19 @@ export default {
       }
     },
 
-    //刷新表格数据
-    refreshTable(resetPager = true) {
-      if (!resetPager) {
-        this.getData();
-      } else {
+    /**
+     *刷新表格数据
+     * @param {boolean} resetPageNumber 是否重置页码
+     */
+    refreshTable(resetPageNumber = true) {
+      if (resetPageNumber) {
         this.pagerModel.pageIndex = this.cOptions.pageNumber;
-        this.pagerModel.pageSize = this.cOptions.pageSize;
-        this.$nextTick().then(_ => {
+        // this.pagerModel.pageSize = this.cOptions.pageSize;
+        this.$nextTick(_ => {
           this.getData();
         });
+      } else {
+        this.getData();
       }
     },
 
@@ -549,6 +561,11 @@ export default {
     //对 Table 进行重新布局
     doLayout() {
       this.table.doLayout();
+    },
+
+    //切换aside显示
+    toggleAside(bl) {
+      this.showAside = bl != "" && bl != null ? bl : !this.showAside;
     }
   },
 

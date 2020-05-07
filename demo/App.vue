@@ -9,17 +9,15 @@
         :query.sync="query"
         @row-click="rowClick"
       >
-        <!-- <template #aside>
-          ASIDE
-        </template> -->
+        <template #aside>ASIDE</template>
 
         <!-- <template #query>
           <el-form-item>
             <el-input v-model="query.key" @keyup.native.enter="$refs.table.refreshTable()"></el-input>
           </el-form-item>
-        </template> -->
+        </template>-->
 
-        <!-- <template #superQuery>
+        <template #superQuery>
           <el-form-item label="字段A" prop="type">
             <el-select v-model="query.type" @change="$refs.table.refreshTable()">
               <el-option value="a" label="A1"></el-option>
@@ -62,7 +60,7 @@
               <el-option value="b" label="B"></el-option>
             </el-select>
           </el-form-item>
-        </template> -->
+        </template>
 
         <!-- <template #action>
           <el-checkbox v-model="options.singleSelect">单选</el-checkbox>
@@ -72,7 +70,7 @@
               <FxButton icon="el-icon-plus" category="item" @click.native="getSelected">获取选中项</FxButton>
             </template>
           </FxButton>
-        </template> -->
+        </template>-->
       </FxTable>
     </div>
 
@@ -125,6 +123,8 @@ export default {
       data3: [],
 
       options: {
+        api: "/api/UserComponent?optionType=list",
+
         // background: "#fff",
 
         // size: "small",
@@ -139,8 +139,6 @@ export default {
 
         // height: 'calc(100% - 20px)',
 
-        api: "/api/UserComponent?optionType=list",
-
         // pagination: false,
 
         // resHandler(res){
@@ -153,7 +151,7 @@ export default {
 
         // order: "asc",
 
-        // pageSize: 10,
+        // pageSize: 2,
 
         // border: false,
 
@@ -167,15 +165,20 @@ export default {
         },
 
         // footer: true,
-        // header: true,
-        // headerProps:{
-        //   height:'20%'
-        // },
-        // aside: true
 
-        // asideProps: {
-        //   background: "#fcfcfc"
-        // }
+        header: true,
+        // headerProps:{
+        // height:'20%',
+        // background:'#f3f3f3'
+        // },
+
+        aside: true,
+        asideProps: {
+          showToggle: true,
+          // background: "#fcfcfc"
+        }
+
+        // footer: true
       },
 
       columns: [
@@ -213,7 +216,7 @@ export default {
       // const selected = this.$refs.table.getSelected();
       console.log(this.$refs.table.selectedRows);
     },
-    rowClick(row){
+    rowClick(row) {
       // console.log(row.name)
     }
   }
@@ -229,7 +232,7 @@ body {
 
 .box {
   width: 70%;
-  min-width:600px;
+  min-width: 600px;
   height: 500px;
   border: 1px solid #eee;
   border-radius: 4px;

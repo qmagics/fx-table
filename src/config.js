@@ -10,7 +10,7 @@ export const DEFAULT_OPTIONS = {
 
     indexTitle: "#",
 
-    pageIndex: 1,
+    pageNumber: 1,
 
     pageSize: 10,
 
@@ -20,7 +20,7 @@ export const DEFAULT_OPTIONS = {
 
     data: [],
 
-    size: "",
+    size: "small",
 
     selectable: false,
 
@@ -49,7 +49,8 @@ export const DEFAULT_OPTIONS = {
 
     //header属性
     headerProps: {
-        height: '50px'
+        height: '50px',
+        background: '#f3f3f3'
     },
 
     //是否有侧边栏
@@ -59,7 +60,8 @@ export const DEFAULT_OPTIONS = {
     asideProps: {
         width: 200,
         show: true,
-        background: '#fff'
+        background: '#fff',
+        showToggle: false,
     },
 
     //是否有工具栏
@@ -84,7 +86,8 @@ export const DEFAULT_OPTIONS = {
 
     //footer属性
     footerProps: {
-        height: 50
+        height: 50,
+        background: '#f3f3f3'
     },
 
     //是否拥有关键词查询控件，当$slots.query不为空时生效
