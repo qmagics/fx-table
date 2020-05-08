@@ -1,68 +1,73 @@
 <template>
-  <div>
-    <div :class="classes">
-      <FxTable
-        ref="table"
-        :data.sync="data"
-        :options="options"
-        :columns="columns"
-        :query.sync="query"
-        @row-click="rowClick"
-      >
-        <template #aside>ASIDE</template>
+  <div :class="classes">
+    <FxTable
+      ref="table"
+      :data.sync="data"
+      :options="options"
+      :columns="columns"
+      :query.sync="query"
+      @row-click="rowClick"
+    >
+      <template #aside>
+        <p v-for="(i,index) in 6" :key="index">ASIDE</p>
+      </template>
 
-        <!-- <template #query>
+      <template #asideRight>
+        <p v-for="(i,index) in 4" :key="index">ASIDE RIGHT</p>
+      </template>
+
+      <!-- <template #query>
           <el-form-item>
             <el-input v-model="query.key" @keyup.native.enter="$refs.table.refreshTable()"></el-input>
           </el-form-item>
-        </template>-->
+      </template>-->
 
-        <template #superQuery>
-          <el-form-item label="字段A" prop="type">
-            <el-select v-model="query.type" @change="$refs.table.refreshTable()">
-              <el-option value="a" label="A1"></el-option>
-              <el-option value="b" label="B"></el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item label="字段A">
-            <el-select v-model="query.type" @change="$refs.table.refreshTable()">
-              <el-option value="a" label="A1"></el-option>
-              <el-option value="b" label="B"></el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item label="字段A">
-            <el-select v-model="query.type" @change="$refs.table.refreshTable()">
-              <el-option value="a" label="A1"></el-option>
-              <el-option value="b" label="B"></el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item label="字段A">
-            <el-select v-model="query.type" @change="$refs.table.refreshTable()">
-              <el-option value="a" label="A1"></el-option>
-              <el-option value="b" label="B"></el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item label="字段A">
-            <el-select v-model="query.type" @change="$refs.table.refreshTable()">
-              <el-option value="a" label="A1"></el-option>
-              <el-option value="b" label="B"></el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item label="字段A">
-            <el-select v-model="query.type" @change="$refs.table.refreshTable()">
-              <el-option value="a" label="A1"></el-option>
-              <el-option value="b" label="B"></el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item label="字段A">
-            <el-select v-model="query.type" @change="$refs.table.refreshTable()">
-              <el-option value="a" label="A1"></el-option>
-              <el-option value="b" label="B"></el-option>
-            </el-select>
-          </el-form-item>
-        </template>
+      <template #superQuery>
+        <el-form-item label="字段A" prop="type">
+          <el-select v-model="query.type" @change="$refs.table.refreshTable()">
+            <el-option value="a" label="A1"></el-option>
+            <el-option value="b" label="B"></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="字段A">
+          <el-select v-model="query.type" @change="$refs.table.refreshTable()">
+            <el-option value="a" label="A1"></el-option>
+            <el-option value="b" label="B"></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="字段A">
+          <el-select v-model="query.type" @change="$refs.table.refreshTable()">
+            <el-option value="a" label="A1"></el-option>
+            <el-option value="b" label="B"></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="字段A">
+          <el-select v-model="query.type" @change="$refs.table.refreshTable()">
+            <el-option value="a" label="A1"></el-option>
+            <el-option value="b" label="B"></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="字段A">
+          <el-select v-model="query.type" @change="$refs.table.refreshTable()">
+            <el-option value="a" label="A1"></el-option>
+            <el-option value="b" label="B"></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="字段A">
+          <el-select v-model="query.type" @change="$refs.table.refreshTable()">
+            <el-option value="a" label="A1"></el-option>
+            <el-option value="b" label="B"></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="字段A">
+          <el-select v-model="query.type" @change="$refs.table.refreshTable()">
+            <el-option value="a" label="A1"></el-option>
+            <el-option value="b" label="B"></el-option>
+          </el-select>
+        </el-form-item>
+      </template>
 
-        <!-- <template #action>
+      <!-- <template #action>
           <el-checkbox v-model="options.singleSelect">单选</el-checkbox>
           <FxButton icon="el-icon-plus" category="dropdown">
             操作
@@ -70,24 +75,22 @@
               <FxButton icon="el-icon-plus" category="item" @click.native="getSelected">获取选中项</FxButton>
             </template>
           </FxButton>
-        </template>-->
-      </FxTable>
-    </div>
+      </template>-->
+    </FxTable>
+  </div>
 
-    <!-- <div class="box">
+  <!-- <div class="box">
       <FxTable :data.sync="data2" :options="options" :columns="columns"></FxTable>
     </div>
 
     <div class="box">
       <FxTable :data.sync="data3" :options="options" :columns="columns"></FxTable>
-    </div>-->
-  </div>
+  </div>-->
 </template>
 
 <script>
 // import FxTable from "../lib/fx-table.min.js";
 // import "../lib/fx-table.min.css";
-
 import FxTable from "../src";
 import FxButton from "../src/components/FxButton.vue";
 
@@ -167,17 +170,19 @@ export default {
         // footer: true,
 
         header: true,
-        headerProps:{
+        headerProps: {
           // height:'10%',
-          background:'#f3f3f3',
-          classes:'demo-header'
+          background: "#f3f3f3",
+          classes: "demo-header"
         },
 
         aside: true,
         asideProps: {
-          showToggle: true,
+          showToggle: true
           // background: "#fcfcfc"
-        }
+        },
+
+        asideRight: true
 
         // footer: true
       },
@@ -245,7 +250,7 @@ body {
   height: 100%;
 }
 
-.demo-header{
+.demo-header {
   text-align: center;
 }
 </style>

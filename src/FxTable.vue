@@ -16,18 +16,18 @@
     </div>
 
     <div class="fx-table--body" :style="bodyStyle">
-      <div class="fx-table--aside" :style="asideStyle" v-if="cOptions.aside">
-        <div class="fx-table--aside-inner" v-show="showAside">
-          <slot name="aside"></slot>
-        </div>
-        <div
-          class="fx-table--aside-toggle"
-          v-if="cOptions.asideProps.showToggle"
-          @click="toggleAside()"
-        >
-          <i class="icon el-icon-caret-right"></i>
-        </div>
-      </div>
+      <FxAside :opened.sync="showAside" :style="asideStyle" v-if="cOptions.aside" position="left">
+        <slot name="aside"></slot>
+      </FxAside>
+
+      <FxAside
+        v-if="cOptions.asideRight"
+        :opened.sync="showAsideRight"
+        :style="asideRightStyle"
+        position="right"
+      >
+        <slot name="asideRight"></slot>
+      </FxAside>
 
       <div class="fx-table--main" :style="mainStyle">
         <div class="fx-table--toolbar" v-if="cOptions.toolbar" :style="toolbarStyle">
@@ -52,7 +52,7 @@
             </div>
 
             <div class="toolbar-end" v-if="$slots.action || $slots.query || $slots.superQuery">
-              <FxButton type="text" v-if="$slots.superQuery" @click="searchbarMode='super'">
+              <FxButton type="text" v-if="$slots.superQuery" @click="superSearch=true">
                 高级查询
                 <i class="el-icon-arrow-down"></i>
               </FxButton>
@@ -69,7 +69,7 @@
         </div>
 
         <transition name="el-zoom-in-top">
-          <div class="fx-table--fixedbar" v-show="searchbarMode==='super'">
+          <div class="fx-table--fixedbar" v-show="superSearch">
             <FxSearchbar v-model="searchModel" superMode @confirm="onSuperSearchConfirm">
               <slot name="superQuery" />
             </FxSearchbar>
@@ -136,6 +136,7 @@ import FxTableColumn from "./components/FxTableColumn.vue";
 import FxSearchbar from "./components/FxSearchbar.vue";
 import FxPager from "./components/FxPager.vue";
 import FxButton from "./components/FxButton.vue";
+import FxAside from "./components/FxAside.vue";
 import { DEFAULT_OPTIONS } from "./config";
 import { getCalcPagerSizes, getCssNumber } from "./utils";
 import axios from "axios";
@@ -150,7 +151,8 @@ export default {
     FxTableColumn,
     FxPager,
     FxSearchbar,
-    FxButton
+    FxButton,
+    FxAside
   },
 
   data() {
@@ -163,6 +165,8 @@ export default {
       order,
       aside,
       asideProps,
+      asideRight,
+      asideRightProps,
       fullScreen
     } = merge.recursive(true, {}, DEFAULT_OPTIONS, this.options);
 
@@ -171,7 +175,11 @@ export default {
 
       showAside: asideProps.show,
 
+      showAsideRight: asideRightProps.show,
+
       searchbarMode: "normal",
+
+      superSearch: false,
 
       tableData: this.data,
 
@@ -359,10 +367,22 @@ export default {
       };
     },
 
-    mainStyle() {
-      const { aside, asideProps } = this.cOptions;
+    asideRightStyle() {
+      const { width, background } = this.cOptions.asideRightProps;
       return {
-        left: aside && this.showAside ? getCssNumber(asideProps.width) : 0
+        width: this.showAsideRight ? getCssNumber(width) : 0,
+        background: background
+      };
+    },
+
+    mainStyle() {
+      const { aside, asideProps, asideRight, asideRightProps } = this.cOptions;
+      return {
+        left: aside && this.showAside ? getCssNumber(asideProps.width) : 0,
+        right:
+          asideRight && this.showAsideRight
+            ? getCssNumber(asideRightProps.width)
+            : 0
       };
     },
 
@@ -443,7 +463,8 @@ export default {
 
     //用户点击高级搜索确认
     onSuperSearchConfirm() {
-      this.searchbarMode = "normal";
+      // this.searchbarMode = "normal";
+      this.superSearch = false;
       this.refreshTable();
     },
 

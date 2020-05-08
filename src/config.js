@@ -71,6 +71,17 @@ export const DEFAULT_OPTIONS = {
         showToggle: false,
     },
 
+    //是否有右侧边栏
+    asideRight:false,
+
+    //侧边栏属性
+    asideRightProps:{
+        width: 200,
+        show: true,
+        background: '#fff',
+        showToggle: false,
+    },
+
     //是否有工具栏
     toolbar: true,
 

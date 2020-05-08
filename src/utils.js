@@ -4,7 +4,7 @@
  * @param {array} sizes 当前的分页列表
  */
 export function getCalcPagerSizes(size, sizes) {
-    if (sizes.includes(size)) {
+    if (sizes.indexOf(size) >= 0) {
         return sizes;
     }
     else {
