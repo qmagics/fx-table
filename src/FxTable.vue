@@ -16,7 +16,13 @@
     </div>
 
     <div class="fx-table--body" :style="bodyStyle">
-      <FxAside :opened.sync="showAside" :style="asideStyle" v-if="cOptions.aside" position="left">
+      <FxAside
+        v-if="cOptions.aside"
+        :opened.sync="showAside"
+        :style="asideStyle"
+        :showToggle="cOptions.asideProps.showToggle"
+        position="left"
+      >
         <slot name="aside"></slot>
       </FxAside>
 
@@ -24,9 +30,30 @@
         v-if="cOptions.asideRight"
         :opened.sync="showAsideRight"
         :style="asideRightStyle"
+        :showToggle="cOptions.asideRightProps.showToggle"
         position="right"
       >
         <slot name="asideRight"></slot>
+      </FxAside>
+
+      <FxAside
+        v-if="cOptions.asideBottom"
+        :opened.sync="showAsideBottom"
+        :style="asideBottomStyle"
+        :showToggle="cOptions.asideBottomProps.showToggle"
+        position="bottom"
+      >
+        <slot name="asideBottom"></slot>
+      </FxAside>
+
+      <FxAside
+        v-if="cOptions.asideTop"
+        :opened.sync="showAsideTop"
+        :style="asideTopStyle"
+        :showToggle="cOptions.asideTopProps.showToggle"
+        position="top"
+      >
+        <slot name="asideBottom"></slot>
       </FxAside>
 
       <div class="fx-table--main" :style="mainStyle">
@@ -57,6 +84,9 @@
                 <i class="el-icon-arrow-down"></i>
               </FxButton>
               <slot name="action"></slot>
+
+              <!-- <FxButton @click="toggleAside('left')">ToggleLeft</FxButton>
+              <FxButton @click="toggleAside('right',true)">ToggleRight:True</FxButton> -->
 
               <FxButton
                 v-if="cOptions.fullScreenProps.showToggle"
@@ -138,7 +168,7 @@ import FxPager from "./components/FxPager.vue";
 import FxButton from "./components/FxButton.vue";
 import FxAside from "./components/FxAside.vue";
 import { DEFAULT_OPTIONS } from "./config";
-import { getCalcPagerSizes, getCssNumber } from "./utils";
+import { getCalcPagerSizes, getCssNumber, firstToUpper } from "./utils";
 import axios from "axios";
 import merge from "merge";
 
@@ -167,6 +197,10 @@ export default {
       asideProps,
       asideRight,
       asideRightProps,
+      asideBottom,
+      asideBottomProps,
+      asideTop,
+      asideTopProps,
       fullScreen
     } = merge.recursive(true, {}, DEFAULT_OPTIONS, this.options);
 
@@ -176,6 +210,10 @@ export default {
       showAside: asideProps.show,
 
       showAsideRight: asideRightProps.show,
+
+      showAsideBottom: asideBottomProps.show,
+
+      showAsideTop: asideTopProps.show,
 
       searchbarMode: "normal",
 
@@ -327,13 +365,18 @@ export default {
         classes.push("is--full-screen");
       }
 
+      if (this.cOptions.outBorder) {
+        classes.push("is--out-border");
+      }
+
       return classes;
     },
 
     style() {
-      const { height, background } = this.cOptions;
+      const { height, width, background } = this.cOptions;
       return {
         height: getCssNumber(height),
+        width: getCssNumber(width),
         background
       };
     },
@@ -360,29 +403,78 @@ export default {
     },
 
     asideStyle() {
-      const { width, background } = this.cOptions.asideProps;
+      const { width, background, bottom, top } = this.cOptions.asideProps;
       return {
         width: this.showAside ? getCssNumber(width) : 0,
-        background: background
+        background: background,
+        top: getCssNumber(top),
+        bottom: getCssNumber(bottom)
       };
     },
 
     asideRightStyle() {
-      const { width, background } = this.cOptions.asideRightProps;
+      const { width, background, bottom, top } = this.cOptions.asideRightProps;
       return {
         width: this.showAsideRight ? getCssNumber(width) : 0,
-        background: background
+        background: background,
+        top: getCssNumber(top),
+        bottom: getCssNumber(bottom)
+      };
+    },
+
+    asideBottomStyle() {
+      const { height, background } = this.cOptions.asideBottomProps;
+
+      return {
+        height: this.showAsideBottom ? getCssNumber(height) : 0,
+        background: background,
+        left: this.getAsideShowByPosition("left")
+          ? getCssNumber(this.cOptions.asideProps.width)
+          : 0,
+        right: this.getAsideShowByPosition("right")
+          ? getCssNumber(this.cOptions.asideRightProps.width)
+          : 0
+      };
+    },
+
+    asideTopStyle() {
+      const { height, background } = this.cOptions.asideTopProps;
+
+      return {
+        height: this.showAsideTop ? getCssNumber(height) : 0,
+        background: background,
+        left: this.getAsideShowByPosition("left")
+          ? getCssNumber(this.cOptions.asideProps.width)
+          : 0,
+        right: this.getAsideShowByPosition("right")
+          ? getCssNumber(this.cOptions.asideRightProps.width)
+          : 0
       };
     },
 
     mainStyle() {
-      const { aside, asideProps, asideRight, asideRightProps } = this.cOptions;
+      const {
+        aside,
+        asideProps,
+        asideRight,
+        asideRightProps,
+        asideBottom,
+        asideBottomProps,
+        asideTop,
+        asideTopProps
+      } = this.cOptions;
       return {
         left: aside && this.showAside ? getCssNumber(asideProps.width) : 0,
         right:
           asideRight && this.showAsideRight
             ? getCssNumber(asideRightProps.width)
-            : 0
+            : 0,
+        bottom:
+          asideBottom && this.showAsideBottom
+            ? getCssNumber(asideBottomProps.height)
+            : 0,
+        top:
+          asideTop && this.showAsideTop ? getCssNumber(asideTopProps.height) : 0
       };
     },
 
@@ -437,8 +529,6 @@ export default {
         ...this.searchModel
       };
 
-      // console.log('pagerModel',this.pagerModel)
-
       return this.method.toLowerCase() === "get"
         ? {
             params: model
@@ -456,6 +546,13 @@ export default {
   },
 
   methods: {
+    //根据位置获取边栏是否存在且处于打开状态
+    getAsideShowByPosition(position) {
+      position = firstToUpper(position);
+      if (position === "Left") position = "";
+      return this.cOptions["aside" + position] && this["showAside" + position];
+    },
+
     //用户改变了搜索条件
     onInputChangedByUser() {
       this.refreshTable();
@@ -463,7 +560,6 @@ export default {
 
     //用户点击高级搜索确认
     onSuperSearchConfirm() {
-      // this.searchbarMode = "normal";
       this.superSearch = false;
       this.refreshTable();
     },
@@ -480,7 +576,6 @@ export default {
 
     //翻页组件每页数量变更
     onPagerSizeChange(val) {
-      // console.log("onPagerSizeChange", val);
       this.refreshTable();
     },
 
@@ -599,9 +694,42 @@ export default {
       this.table.doLayout();
     },
 
-    //切换aside显示
-    toggleAside(bl) {
-      this.showAside = bl != "" && bl != null ? bl : !this.showAside;
+    /**
+     * 切换aside显示
+     * @param {string} position aside方向 (可选) 不填则切换所有aside的状态
+     * @param {boolean} bl 显示或隐藏 (可选)
+     */
+    toggleAside(position, bl) {
+      let positionArr = ["", "Right", "Top", "Bottom"];
+      // 0 arguments
+      if (arguments.length === 0) {
+        positionArr.forEach(p => {
+          this["showAside" + p] = !this["showAside" + p];
+        });
+      } 
+      // 1 arguments
+      else if (arguments.length === 1) {
+        let [arg1] = arguments;
+
+        arg1 = firstToUpper(arg1);
+        arg1 = arg1 === "Left" ? "" : arg1;
+
+        if (typeof arg1 === "string") {
+          this["showAside" + arg1] = !this["showAside" + arg1];
+        } else if (typeof arg1 === "boolean") {
+          positionArr.forEach(p => {
+            this["showAside" + p] = arg1;
+          });
+        }
+      }
+      // >1 arguments
+      else if (arguments.length > 1) {
+        let [arg1, arg2] = arguments;
+        arg1 = firstToUpper(arg1);
+        arg1 = arg1 === "Left" ? "" : arg1;
+
+        this["showAside" + arg1] = arg2;
+      }
     }
   },
 
@@ -609,6 +737,10 @@ export default {
     if (this.cOptions.api) {
       await this.getData();
     }
+
+    // setInterval(_=>{
+    //   this.toggleAside();
+    // },50);
   }
 };
 </script>

@@ -2,15 +2,16 @@
   <div class="fx-aside" :class="classes">
     <div class="fx-aside--inner">
       <slot></slot>
-      <pre>isOpened:{{isOpened}}</pre>
     </div>
-    <div class="fx-aside--toggle" @click="onToggle">
-      <i class="icon el-icon-s-fold"></i>
+    <div class="fx-aside--toggle" v-if="showToggle" @click="onToggle">
+      <span class="text" v-if="toggleBtnText">{{toggleBtnText}}</span>
+      <i v-else class="icon" :class="isOpened?cToggleOnIcon:cToggleOffIcon"></i>
     </div>
   </div>
 </template>
 
 <script>
+import { reversePositionText } from "../utils";
 export default {
   name: "FxAside",
 
@@ -19,7 +20,19 @@ export default {
       type: String,
       default: "left"
     },
-    opened: {}
+
+    opened: {},
+
+    showToggle: {
+      type: Boolean,
+      default: true
+    },
+
+    toggleOnIcon: String,
+
+    toggleOffIcon: String,
+
+    toggleBtnText: String
   },
 
   data() {
@@ -46,6 +59,14 @@ export default {
       }
 
       return arr;
+    },
+
+    cToggleOnIcon() {
+      return this.toggleOnIcon || `el-icon-caret-${this.position}`;
+    },
+
+    cToggleOffIcon() {
+      return this.toggleOffIcon || `el-icon-caret-${reversePositionText(this.position)}`;
     }
   },
   methods: {
@@ -58,9 +79,13 @@ export default {
 
 <style lang="scss">
 $transition: all 0.2s ease-in-out;
+$toggle-btn-bgcolor: #f3f3f3;
+$toggle-btn-active-bgcolor: #e5edf7;
+$toggle-btn-color: #8c8c8c;
+$toggle-btn-scale: 1.3;
+$toggle-btn-size: 20px;
 
 .fx-aside {
-  height: 100%;
   position: absolute;
   transition: $transition;
 
@@ -68,46 +93,55 @@ $transition: all 0.2s ease-in-out;
     left: 0;
     box-shadow: 2px 0 4px rgba(0, 0, 0, 0.1);
 
-    .icon {
-      transform-origin: right;
-    }
-
     .fx-aside--toggle {
+      width: $toggle-btn-size;
+      height: auto;
+      min-height: 44px;
       top: 50%;
       right: 0;
       margin-top: -22px;
 
       border-bottom: 9px solid transparent;
       border-left: none;
-      border-right: 13px solid #f3f3f3;
+      border-right: $toggle-btn-size solid $toggle-btn-bgcolor;
       border-top: 9px solid transparent;
-      transition: all 0.1s ease;
+      transition: all 0.15s ease;
       transform-origin: right;
 
       &:hover {
-        transform: scale(1.6, 1);
+        transform: scale($toggle-btn-scale, 1);
+
+        .text {
+          transform: scale(0.7, 1);
+        }
       }
 
       .icon {
-        color: #8c8c8c;
-        text-align: center;
-        position: absolute;
-        font-size: 14px;
         top: 50%;
-        transform: translate(0, -50%);
+        left: $toggle-btn-size/2;
+        transform: translate(-50%, -50%);
         transform-origin: right;
+      }
+
+      .text {
+        font-size: 13px;
+        color: $toggle-btn-color;
       }
     }
 
     &.is-closed {
       .fx-aside--toggle {
-        right: -13px;
+        right: -$toggle-btn-size;
         border-right: none;
-        border-left: 13px solid #e3effb;
+        border-left: $toggle-btn-size solid $toggle-btn-active-bgcolor;
         transform-origin: left;
         .icon {
-          transform: translate(-16px, -50%);
+          left: -$toggle-btn-size/2;
+          transform: translate(-50%, -50%);
           transform-origin: left;
+        }
+        .text {
+          transform: translate(-$toggle-btn-size, 0);
         }
       }
     }
@@ -117,41 +151,137 @@ $transition: all 0.2s ease-in-out;
     right: 0;
     box-shadow: -2px 0 4px rgba(0, 0, 0, 0.1);
 
-    .icon {
-      transform-origin: left;
-    }
-
     .fx-aside--toggle {
+      width: $toggle-btn-size;
+      height: auto;
+      min-height: 44px;
       top: 50%;
       left: 0;
       margin-top: -22px;
 
       border-bottom: 9px solid transparent;
       border-right: none;
-      border-left: 13px solid #f3f3f3;
+      border-left: $toggle-btn-size solid $toggle-btn-bgcolor;
       border-top: 9px solid transparent;
       transition: all 0.1s ease;
       transform-origin: left;
 
       &:hover {
-        transform: scale(1.6, 1);
+        transform: scale($toggle-btn-scale, 1);
       }
 
       .icon {
-        transform: translate(-16px, -50%);
+        top: 50%;
+        left: -$toggle-btn-size/2;
+        transform: translate(-50%, -50%);
         transform-origin: left;
       }
     }
 
     &.is-closed {
       .fx-aside--toggle {
-        left: -13px;
+        left: -$toggle-btn-size;
         border-left: none;
-        border-right: 13px solid #e3effb;
+        border-right: $toggle-btn-size solid $toggle-btn-active-bgcolor;
         transform-origin: right;
         .icon {
-          transform: translate(0, -50%);
+          left: $toggle-btn-size/2;
+          transform: translate(-50%, -50%);
           transform-origin: right;
+        }
+      }
+    }
+  }
+
+  &.position-bottom {
+    bottom: 0;
+    box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.1);
+
+    .fx-aside--toggle {
+      height: $toggle-btn-size;
+      width: auto;
+      min-width: 44px;
+      top: 0;
+      left: 50%;
+      margin-left: -22px;
+
+      border-left: 9px solid transparent;
+      border-bottom: none;
+      border-top: $toggle-btn-size solid $toggle-btn-bgcolor;
+      border-right: 9px solid transparent;
+
+      transition: all 0.1s ease;
+      transform-origin: top;
+
+      &:hover {
+        transform: scale(1,$toggle-btn-scale);
+      }
+
+      .icon {
+        left: 50%;
+        top: -$toggle-btn-size/2;
+        transform: translate(-50%, -50%);
+        transform-origin: top;
+      }
+    }
+
+    &.is-closed {
+      .fx-aside--toggle {
+        top: -$toggle-btn-size;
+        border-top: none;
+        border-bottom: $toggle-btn-size solid $toggle-btn-active-bgcolor;
+        transform-origin: bottom;
+        .icon {
+          top: $toggle-btn-size/2;
+          transform: translate(-50%, -50%);
+          transform-origin: bottom;
+        }
+      }
+    }
+  }
+
+  &.position-top {
+    top: 0;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+    .fx-aside--toggle {
+      height: $toggle-btn-size;
+      width: auto;
+      min-width: 44px;
+      bottom: 0;
+      left: 50%;
+      margin-left: -22px;
+
+      border-left: 9px solid transparent;
+      border-top: none;
+      border-bottom: $toggle-btn-size solid $toggle-btn-bgcolor;
+      border-right: 9px solid transparent;
+
+      transition: all 0.1s ease;
+      transform-origin: bottom;
+
+      &:hover {
+        transform: scale(1,$toggle-btn-scale);
+      }
+
+      .icon {
+        left: 50%;
+        top: $toggle-btn-size/2;
+        transform: translate(-50%, -50%);
+        transform-origin: bottom;
+      }
+    }
+
+    &.is-closed {
+      .fx-aside--toggle {
+        bottom: -$toggle-btn-size;
+        border-bottom: none;
+        border-top: $toggle-btn-size solid $toggle-btn-active-bgcolor;
+        transform-origin: top;
+        .icon {
+          top: -$toggle-btn-size/2;
+          transform: translate(-50%, -50%);
+          transform-origin: top;
         }
       }
     }
@@ -162,8 +292,6 @@ $transition: all 0.2s ease-in-out;
     overflow: hidden;
   }
   .fx-aside--toggle {
-    width: 13px;
-    height: 44px;
     display: block;
     text-align: center;
     position: absolute;
@@ -172,12 +300,13 @@ $transition: all 0.2s ease-in-out;
     transition: $transition;
 
     .icon {
-      color: #8c8c8c;
+      color: $toggle-btn-color;
       text-align: center;
       position: absolute;
       font-size: 14px;
-      top: 50%;
-      transform: translate(0, -50%);
+    }
+    .text {
+      display: inline-block;
     }
   }
 }

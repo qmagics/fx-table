@@ -1,5 +1,9 @@
 .fx-table {
-  // border:1px solid #ddd;
+  box-sizing: border-box;
+
+  &.is--out-border{
+    border:1px solid #EBEEF5;
+  }
   
   *{
     box-sizing: border-box;
@@ -18,7 +22,6 @@
     background: #fff;
     z-index: 4;
   }
-  
 
   .fx-table--header {
     overflow: hidden;
@@ -26,6 +29,10 @@
 
   .fx-table--body {
     position: relative;
+
+    .fx-aside{
+      z-index: 2;
+    }
 
     .fx-table--main {
       position: absolute;

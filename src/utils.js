@@ -20,3 +20,25 @@ export function getCalcPagerSizes(size, sizes) {
 export function getCssNumber(val) {
     return typeof val === 'string' ? val : val + 'px';
 }
+
+/**
+ * 转换方向字符串
+ * @param {string} position 原方向
+ */
+export function reversePositionText(position) {
+    return {
+        left: 'right',
+        right: 'left',
+        bottom: 'top',
+        top: 'bottom',
+    }[position] || '';
+}
+
+/**
+ * 字符串首字母转大写
+ * @param {string} str 
+ */
+export function firstToUpper(str) {
+    str = str.trim();
+    return str.replace(str[0], str[0].toUpperCase());
+} 

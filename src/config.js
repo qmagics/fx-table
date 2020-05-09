@@ -4,7 +4,11 @@ export const DEFAULT_OPTIONS = {
 
     height: '100%',
 
-    border: true,
+    width: '100%',
+
+    border: false,
+
+    outBorder: true,
 
     showIndex: false,
 
@@ -52,7 +56,6 @@ export const DEFAULT_OPTIONS = {
 
     //是否有头部
     header: false,
-
     //header属性
     headerProps: {
         classes: '',
@@ -62,21 +65,43 @@ export const DEFAULT_OPTIONS = {
 
     //是否有侧边栏
     aside: false,
-
     //侧边栏属性
     asideProps: {
         width: 200,
+        bottom: 0,//左右侧栏优先展示，因此bottom和top写死，后期做成优先级可配置
+        top: 0,
         show: true,
         background: '#fff',
         showToggle: false,
     },
 
     //是否有右侧边栏
-    asideRight:false,
-
-    //侧边栏属性
-    asideRightProps:{
+    asideRight: false,
+    //右侧边栏属性
+    asideRightProps: {
         width: 200,
+        bottom: 0,//左右侧栏优先展示，因此bottom和top写死，后期做成优先级可配置
+        top: 0,
+        show: true,
+        background: '#fff',
+        showToggle: false,
+    },
+
+    //底部侧边栏
+    asideBottom: false,
+    //底部侧边栏属性
+    asideBottomProps: {
+        height: 200,
+        show: true,
+        background: '#fff',
+        showToggle: false,
+    },
+
+    //头部侧边栏
+    asideTop: false,
+    //头部侧边栏属性
+    asideTopProps: {
+        height: 200,
         show: true,
         background: '#fff',
         showToggle: false,
@@ -84,7 +109,6 @@ export const DEFAULT_OPTIONS = {
 
     //是否有工具栏
     toolbar: true,
-
     //toolbar属性
     toolbarProps: {
         height: 50,
@@ -93,7 +117,6 @@ export const DEFAULT_OPTIONS = {
 
     //是否有分页
     pagination: true,
-
     //分页属性
     paginationProps: {
         height: 50
@@ -101,7 +124,6 @@ export const DEFAULT_OPTIONS = {
 
     //是否有尾部（包括分页组件）
     footer: false,
-
     //footer属性
     footerProps: {
         height: 50,
@@ -110,7 +132,6 @@ export const DEFAULT_OPTIONS = {
 
     //是否拥有关键词查询控件，当$slots.query不为空时生效
     keyword: true,
-
     //关键词查询控件属性
     keywordProps: {
         label: '',

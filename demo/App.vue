@@ -9,11 +9,11 @@
       @row-click="rowClick"
     >
       <template #aside>
-        <p v-for="(i,index) in 6" :key="index">ASIDE</p>
+        <!-- <p v-for="(i,index) in 6" :key="index">ASIDE</p> -->
       </template>
 
       <template #asideRight>
-        <p v-for="(i,index) in 4" :key="index">ASIDE RIGHT</p>
+        <!-- <p v-for="(i,index) in 4" :key="index">ASIDE RIGHT</p> -->
       </template>
 
       <!-- <template #query>
@@ -140,7 +140,9 @@ export default {
 
         // showIndex: true,
 
-        // height: 'calc(100% - 20px)',
+        // width: '80vw',
+
+        // height: '80vh',
 
         // pagination: false,
 
@@ -169,22 +171,33 @@ export default {
 
         // footer: true,
 
-        header: true,
-        headerProps: {
-          // height:'10%',
-          background: "#f3f3f3",
-          classes: "demo-header"
-        },
+        // header: true,
+        // headerProps: {
+        //   height:'10%',
+        //   background: "#f3f3f3",
+        //   classes: "demo-header"
+        // },
 
-        aside: true,
-        asideProps: {
-          showToggle: true
-          // background: "#fcfcfc"
-        },
+        // aside: true,
+        // asideProps: {
+        //   width: 10,
+        // },
 
-        asideRight: true
+        // asideRight: true,
+        // asideRightProps: {
+        //   width: 10
+        // },
 
-        // footer: true
+        // asideBottom: true,
+
+        // asideBottomProps: {
+        //   height: 10
+        // },
+
+        // asideTop: true,
+        // asideTopProps: {
+        //   height: 10
+        // },
       },
 
       columns: [
@@ -237,11 +250,11 @@ body {
 }
 
 .box {
-  width: 70%;
-  min-width: 600px;
-  height: 500px;
-  border: 1px solid #eee;
-  border-radius: 4px;
+  width: 600px;
+  // min-width: 600px;
+  height: 600px;
+  // border: 1px solid #eee;
+  // border-radius: 4px;
   margin: 40px auto;
   overflow: hidden;
 }
