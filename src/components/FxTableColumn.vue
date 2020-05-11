@@ -13,7 +13,7 @@
     :formatter="column.formatter"
   >
     <template v-slot="{row}">
-      <span v-html="column.formatter(row,column)" v-if="column.formatter"></span>
+      <span v-html="column.formatter(row[column.prop],row)" v-if="column.formatter"></span>
       <span v-else>{{row[column.prop]}}</span>
     </template>
 
