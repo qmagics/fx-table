@@ -167,7 +167,7 @@ export default {
           });
 
           return res.data;
-        },
+        }
 
         // footer: true,
 
@@ -209,7 +209,24 @@ export default {
         {
           prop: "age",
           label: "AGE",
-          sortable: true
+          sortable: true,
+          formatter(val) {
+            return val + 5;
+          },
+          render(h, context) {
+            const { value, row } = context;
+
+            function testClick() {
+              alert("testClick");
+            }
+
+            return (
+              // <a href={"http://baidu.com/s?wd=" + value} target="_blank">
+              //   {"去百度搜索" + value}
+              // </a>
+              <el-button size="mini" onClick={testClick}>{value}</el-button>
+            );
+          }
         },
         {
           prop: "sss",

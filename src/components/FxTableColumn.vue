@@ -13,12 +13,17 @@
     :formatter="column.formatter"
   >
     <template v-slot="{row}">
-      <span v-html="column.formatter(row[column.prop],row)" v-if="column.formatter"></span>
+      <renderComp
+        v-if="column.render"
+        :render="column.render"
+        :context="{value:row[column.prop],row}"
+      ></renderComp>
+      <span v-else-if="column.formatter" v-html="column.formatter(row[column.prop],row)"></span>
       <span v-else>{{row[column.prop]}}</span>
     </template>
 
     <template v-if="column.children && column.children.length">
-      <SeTableColumn v-for="(i,index) in column.children" :column="i" :key="i.prop+index"></SeTableColumn>
+      <FxTableColumn v-for="(i,index) in column.children" :column="i" :key="i.prop+index"></FxTableColumn>
     </template>
   </el-table-column>
 </template>
@@ -29,6 +34,18 @@ export default {
 
   props: {
     column: {}
+  },
+
+  components: {
+    renderComp: {
+      props: {
+        render: Function,
+        context: {}
+      },
+      render(h) {
+        return this.render(h, this.context);
+      }
+    }
   }
 };
 </script>
