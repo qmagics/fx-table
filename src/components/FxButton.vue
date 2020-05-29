@@ -4,7 +4,9 @@
     :class="'fx-button--'+category"
     :is="component"
     v-bind="$props"
+    :split-button="split"
     @click="onClick"
+    @click.native="onNativeClick"
   >
     <slot v-if="category!=='dropdown'" />
 
@@ -54,7 +56,9 @@ export default {
 
     circle: {},
 
-    loading: {}
+    loading: {},
+
+    disabled:{}
   },
 
   data() {
@@ -77,6 +81,10 @@ export default {
   methods: {
     onClick() {
       this.$emit("click");
+    },
+
+    onNativeClick() {
+      if (this.category === "item") this.$emit("click");
     }
   },
 

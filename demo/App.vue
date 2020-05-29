@@ -5,6 +5,7 @@
       :data.sync="data"
       :options="options"
       :columns="columns"
+      :actions="actions"
       :query.sync="query"
       @row-click="rowClick"
     >
@@ -93,6 +94,7 @@
 // import "../lib/fx-table.min.css";
 import FxTable from "../src";
 import FxButton from "../src/components/FxButton.vue";
+import { Action } from "../src";
 
 export default {
   components: {
@@ -102,6 +104,8 @@ export default {
 
   data() {
     return {
+      ddd: true,
+
       classes: [
         "box"
         // "container"
@@ -224,7 +228,9 @@ export default {
               // <a href={"http://baidu.com/s?wd=" + value} target="_blank">
               //   {"去百度搜索" + value}
               // </a>
-              <el-button size="mini" onClick={testClick}>{value}</el-button>
+              <el-button size="mini" onClick={testClick}>
+                {value}
+              </el-button>
             );
           }
         },
@@ -232,9 +238,66 @@ export default {
           prop: "sss",
           label: "SSS"
         }
+      ],
+
+      actions: [
+        new Action(
+          {
+            name: "添加",
+            icon: "el-icon-apple",
+            category: "group",
+            children: [
+              {
+                name: "添加2",
+                icon: "el-icon-apple",
+                disabled: this.ddd,
+                callback() {
+                  alert(this.ddd);
+                }
+              },
+              {
+                name: "添加3",
+                icon: "el-icon-check",
+                callback() {
+                  alert(3);
+                }
+              }
+            ]
+          },
+          this
+        ),
+        new Action(
+          {
+            name: "添加",
+            icon: "el-icon-apple",
+            category: "dropdown",
+            children: [
+              {
+                name: "添加2",
+                icon: "el-icon-apple",
+                disabled: this.ddd,
+                callback() {
+                  alert(this.ddd);
+                }
+              },
+              {
+                name: "添加3",
+                icon: "el-icon-check",
+                callback() {
+                  alert(3);
+                }
+              }
+            ]
+          },
+          this
+        )
       ]
     };
   },
+
+  // computed:{
+  //   actions(){}
+  // },
 
   mounted() {
     // let i = 1;

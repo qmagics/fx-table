@@ -85,8 +85,24 @@
               </FxButton>
               <slot name="action"></slot>
 
-              <!-- <FxButton @click="toggleAside('left')">ToggleLeft</FxButton>
-              <FxButton @click="toggleAside('right',true)">ToggleRight:True</FxButton> -->
+              <!-- <FxButton icon="el-icon-plus" category="dropdown" split @click="test('1')">
+                操作
+                <template slot="items">
+                  <FxButton icon="el-icon-plus" @click.native="test('item1')" category="item">item1</FxButton>
+                </template>
+              </FxButton>-->
+
+              <!-- <FxButton
+                v-for="action in cActions"
+                :key="action.code"
+                :category="action.category"
+                @click="runAction(action)"
+              >
+              {{action.name}}
+              
+              </FxButton> -->
+
+              <ActionRenderer v-for="action in cActions" :key="action.code" :action="action" :handler="runAction"></ActionRenderer>
 
               <FxButton
                 v-if="cOptions.fullScreenProps.showToggle"
@@ -162,6 +178,7 @@
 </template>
 
 <script>
+import Vue from "vue";
 import FxTableColumn from "./components/FxTableColumn.vue";
 import FxSearchbar from "./components/FxSearchbar.vue";
 import FxPager from "./components/FxPager.vue";
@@ -171,6 +188,7 @@ import { DEFAULT_OPTIONS } from "./config";
 import { getCalcPagerSizes, getCssNumber, firstToUpper } from "./utils";
 import axios from "axios";
 import merge from "merge";
+import ActionRenderer from './components/ActionRenderer.vue';
 
 window.merge = merge;
 
@@ -182,7 +200,8 @@ export default {
     FxPager,
     FxSearchbar,
     FxButton,
-    FxAside
+    FxAside,
+    ActionRenderer
   },
 
   data() {
@@ -262,7 +281,9 @@ export default {
 
     data: {},
 
-    query: {}
+    query: {},
+
+    actions: Array
   },
 
   watch: {
@@ -298,6 +319,10 @@ export default {
   computed: {
     table() {
       return this.$refs.table;
+    },
+
+    cActions() {
+      return this.actions;
     },
 
     selectedRows: {
@@ -706,7 +731,7 @@ export default {
         positionArr.forEach(p => {
           this["showAside" + p] = !this["showAside" + p];
         });
-      } 
+      }
       // 1 arguments
       else if (arguments.length === 1) {
         let [arg1] = arguments;
@@ -730,6 +755,20 @@ export default {
 
         this["showAside" + arg1] = arg2;
       }
+    },
+
+    /**
+     * 执行Action操作
+     * @param {Action} action Action对象
+     */
+    runAction(action) {
+      const { callback, thisArg } = action;
+
+      callback && callback.call(thisArg);
+    },
+
+    test(str) {
+      alert(str);
     }
   },
 

@@ -3,7 +3,6 @@ import ElementUI from 'element-ui';
 Vue.use(ElementUI);
 
 import FxTable from './FxTable.vue';
-export { default as FxTableColumn } from './components/FxTableColumn.vue';
 
 FxTable.install = (Vue, opt) => {
     Vue.component(FxTable.name, FxTable);
@@ -15,7 +14,10 @@ FxTable.install = (Vue, opt) => {
 
     //覆盖表格默认的配置项，可以提供自定义的初始展现形式
     Vue.FxTable_defaultOptions = defaultOptions;
-
 }
 
 export default FxTable;
+
+export { default as FxTableColumn } from './components/FxTableColumn.vue';
+
+export { default as Action } from './classes/Action';
