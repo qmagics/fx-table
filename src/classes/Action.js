@@ -4,9 +4,11 @@ export default class Action {
     /**
      * 操作类
      * @param {Object|String} options 配置项 
+     * @param {Object} thisArg callback函数的this指向对象,默认会指向FxTable实例
      */
     constructor(options, thisArg) {
         this.thisArg = thisArg || null;
+        this.__isAction = true;
 
         if (typeof options === 'object') {
             this.initOptions(options);
@@ -56,7 +58,8 @@ export default class Action {
                 if (this.category === 'dropdown') {
                     i.category = 'item';
                 }
-                this.children.push(new Action(i, this.thisArg));
+
+                this.children.push(i.__isAction ? i : new Action(i, this.thisArg));
             });
         }
     }
@@ -66,7 +69,7 @@ export default class Action {
      * @param {string} code 代码 
      */
     static getOptionsByCode(code) {
-        const map = Vue.FxTable_actionMap;
+        const map = Vue.__FxTable_presetActions;
 
         return (map && map[code]) ? map[code] : null;
     }

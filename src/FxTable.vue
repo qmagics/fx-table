@@ -100,9 +100,14 @@
               >
               {{action.name}}
               
-              </FxButton> -->
+              </FxButton>-->
 
-              <ActionRenderer v-for="action in cActions" :key="action.code" :action="action" :handler="runAction"></ActionRenderer>
+              <ActionRenderer
+                v-for="action in cActions"
+                :key="action.code"
+                :action="action"
+                :handler="runAction"
+              ></ActionRenderer>
 
               <FxButton
                 v-if="cOptions.fullScreenProps.showToggle"
@@ -188,12 +193,12 @@ import { DEFAULT_OPTIONS } from "./config";
 import { getCalcPagerSizes, getCssNumber, firstToUpper } from "./utils";
 import axios from "axios";
 import merge from "merge";
-import ActionRenderer from './components/ActionRenderer.vue';
+import ActionRenderer from "./components/ActionRenderer.vue";
 
 window.merge = merge;
 
 export default {
-  name: "fx-table",
+  name: "FxTable",
 
   components: {
     FxTableColumn,
@@ -322,6 +327,7 @@ export default {
     },
 
     cActions() {
+      console.log(this.actions);
       return this.actions;
     },
 
@@ -764,7 +770,8 @@ export default {
     runAction(action) {
       const { callback, thisArg } = action;
 
-      callback && callback.call(thisArg);
+      //如果用户未定义thisArg,则默认在当前table上下文中调用action
+      callback && callback.call(thisArg || this);
     },
 
     test(str) {

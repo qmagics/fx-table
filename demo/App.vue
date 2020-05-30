@@ -92,13 +92,37 @@
 <script>
 // import FxTable from "../lib/fx-table.min.js";
 // import "../lib/fx-table.min.css";
-import FxTable from "../src";
+import Vue from "vue";
+import FxTable, { Action } from "../src";
 import FxButton from "../src/components/FxButton.vue";
-import { Action } from "../src";
+
+Vue.use(FxTable, {
+  presetActions: {
+    add: {
+      name: "新增",
+      icon: "el-icon-plus",
+      category: "button",
+      callback() {
+        this.$alert("打开新增界面");
+      }
+    },
+    edit: {
+      name: "编辑",
+      icon: "el-icon-edit",
+      category: "button",
+      callback() {
+        if (!this.selectedRows.length) {
+          this.$alert("请选择一条数据");
+          return;
+        }
+        this.$alert("打开编辑界面");
+      }
+    }
+  }
+});
 
 export default {
   components: {
-    FxTable,
     FxButton
   },
 
@@ -136,9 +160,9 @@ export default {
 
         // size: "small",
 
-        // selectable: true,
+        selectable: true,
 
-        // clickToSelect: true,
+        clickToSelect: true,
 
         // singleSelect: true,
 
@@ -241,56 +265,12 @@ export default {
       ],
 
       actions: [
-        new Action(
-          {
-            name: "添加",
-            icon: "el-icon-apple",
-            category: "group",
-            children: [
-              {
-                name: "添加2",
-                icon: "el-icon-apple",
-                disabled: this.ddd,
-                callback() {
-                  alert(this.ddd);
-                }
-              },
-              {
-                name: "添加3",
-                icon: "el-icon-check",
-                callback() {
-                  alert(3);
-                }
-              }
-            ]
-          },
-          this
-        ),
-        new Action(
-          {
-            name: "添加",
-            icon: "el-icon-apple",
-            category: "dropdown",
-            children: [
-              {
-                name: "添加2",
-                icon: "el-icon-apple",
-                disabled: this.ddd,
-                callback() {
-                  alert(this.ddd);
-                }
-              },
-              {
-                name: "添加3",
-                icon: "el-icon-check",
-                callback() {
-                  alert(3);
-                }
-              }
-            ]
-          },
-          this
-        )
+        new Action({
+          name: "添加",
+          icon: "el-icon-apple",
+          category: "group",
+          children: [new Action("add"), new Action("edit")]
+        })
       ]
     };
   },
