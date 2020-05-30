@@ -78,7 +78,10 @@
               </FxSearchbar>
             </div>
 
-            <div class="toolbar-end" v-if="$slots.action || $slots.query || $slots.superQuery">
+            <div
+              class="toolbar-end"
+              v-if="$slots.action || $slots.query || $slots.superQuery || (cActions && cActions.length)"
+            >
               <FxButton type="text" v-if="$slots.superQuery" @click="superSearch=true">
                 高级查询
                 <i class="el-icon-arrow-down"></i>
