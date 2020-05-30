@@ -10,6 +10,8 @@
       @row-click="rowClick"
     >
       <template #aside>
+        <el-button @click="options.api='/api/CustomParts?optionType=list'">自定义组件</el-button>
+        <el-button @click="options.api='/api/UserComponent?optionType=list'">用户组件</el-button>
         <!-- <p v-for="(i,index) in 6" :key="index">ASIDE</p> -->
       </template>
 
@@ -195,7 +197,7 @@ export default {
           });
 
           return res.data;
-        }
+        },
 
         // footer: true,
 
@@ -206,7 +208,7 @@ export default {
         //   classes: "demo-header"
         // },
 
-        // aside: true,
+        aside: true,
         // asideProps: {
         //   width: 10,
         // },
@@ -310,7 +312,7 @@ body {
 }
 
 .box {
-  width: 600px;
+  width: 1200px;
   // min-width: 600px;
   height: 600px;
   // border: 1px solid #eee;

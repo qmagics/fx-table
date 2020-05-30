@@ -318,6 +318,11 @@ export default {
         this.$emit("update:query", val);
       },
       deep: true
+    },
+
+    //监听api变更
+    "cOptions.api"(newApi) {
+      this.refreshTable();
     }
   },
 
@@ -647,6 +652,8 @@ export default {
     async getData() {
       if (!this.api) return;
 
+      this.loading = true;
+
       try {
         const { data, status } = await axios[this.method.toLowerCase()](
           this.cOptions.api,
@@ -662,10 +669,12 @@ export default {
         } else {
           this.tableData = res;
         }
+        this.loading = false;
       } catch (error) {
         if (process.env === "development") {
           console.warn(`[FxTable]组件getData方法错误：`, error);
         }
+        this.loading = false;
       }
     },
 
