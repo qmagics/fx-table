@@ -40,18 +40,49 @@ export const DEFAULT_OPTIONS = {
 
     method: 'get',
 
-    resHandler(res) {
-        return res.data;
-    },
-
     order: "asc",
 
     sort: "",
 
+    //是否树形
+    tree: false,
+
+    //树形属性配置
+    treeProps: {
+        hasChildren: 'hasChildren',//是否有子节点
+        
+        children: 'children',//子节点标识
+        
+        lazy: true,//懒加载子节点
+        
+        load: function (tree, treeNode, resolve) {//默认加载子节点函数
+            // setTimeout(() => {
+            //     resolve([
+            //         {
+            //             id: 255,
+            //             name: "MAYAAA",
+            //             age: 176
+            //         }, {
+            //             id: 257,
+            //             name: "MAYBBB",
+            //             age: 172
+            //         }
+            //     ])
+            // }, 1000)
+        }
+    },
+
+    //ajax结果处理函数
+    resHandler(res) {
+        return res.data;
+    },
+
+    //是否全屏
     fullScreen: false,
 
+    //全屏属性
     fullScreenProps: {
-        showToggle: true
+        showToggle: false
     },
 
     //是否显示合计

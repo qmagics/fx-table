@@ -10,9 +10,26 @@
       @row-click="rowClick"
       @row-dblclick="rowDblClick"
     >
+      <!-- <el-table-column v-if="name" label="NAME" prop="name">
+        <el-table-column v-if="code" label="CODE" prop="code"></el-table-column>
+        <el-table-column v-if="type" label="TYPE" prop="type"></el-table-column>
+      </el-table-column>-->
+
+      <!-- <FxTableColumn v-if="name" :column="{label:'NAME',prop:'name'}">
+        <template v-slot="{value}">
+          <el-link>{{value}}</el-link>
+        </template>
+      </FxTableColumn>
+      <FxTableColumn v-if="code" :column="{label:'CODE',prop:'code'}"></FxTableColumn>
+      <FxTableColumn v-if="type" :column="{label:'TYPE',prop:'type'}"></FxTableColumn>-->
+
       <template #aside>
         <el-button @click="options.api='/api/CustomParts?optionType=list'">自定义组件</el-button>
         <el-button @click="options.api='/api/UserComponent?optionType=list'">用户组件</el-button>
+
+        <el-button :type="name?'primary':''" @click="name=!name">ddd</el-button>
+        <el-button :type="code?'primary':''" @click="code=!code">code</el-button>
+        <el-button :type="type?'primary':''" @click="type=!type">type</el-button>
         <!-- <p v-for="(i,index) in 6" :key="index">ASIDE</p> -->
       </template>
 
@@ -96,7 +113,7 @@
 // import FxTable from "../lib/fx-table.min.js";
 // import "../lib/fx-table.min.css";
 import Vue from "vue";
-import FxTable, { Action } from "../src";
+import FxTable, { Action, FxTableColumn } from "../src";
 import FxButton from "../src/components/FxButton.vue";
 
 Vue.use(FxTable, {
@@ -126,12 +143,15 @@ Vue.use(FxTable, {
 
 export default {
   components: {
-    FxButton
+    FxButton,
+    FxTableColumn
   },
 
   data() {
     return {
-      ddd: true,
+      name: true,
+      code: true,
+      type: true,
 
       classes: [
         "box"
@@ -140,12 +160,28 @@ export default {
 
       data: [
         {
+          id: 1,
           name: "JAMES",
-          age: 35
+          age: 35,
+
+          children: [
+            {
+              id: 1.1,
+              name: "LILY",
+              age: 22
+            },
+            {
+              id: 1.2,
+              name: "LuCY",
+              age: 23
+            }
+          ]
         },
         {
-          name: "LILY",
-          age: 17
+          id: 2,
+          name: "MAY",
+          age: 17,
+          hasChildren: true
         }
       ],
 
@@ -157,17 +193,19 @@ export default {
       data3: [],
 
       options: {
-        api: "/api/UserComponent?optionType=list",
+        // api: "/api/UserComponent?optionType=list",
 
         // background: "#fff",
 
         // size: "small",
 
+        rowKey: "id",
+
         selectable: true,
 
         clickToSelect: true,
 
-        showSummary: true,
+        // showSummary: true,
 
         // singleSelect: true,
 
@@ -237,11 +275,13 @@ export default {
         {
           prop: "name",
           label: "NAME",
+          visible: true,
           sortable: true
         },
         {
           prop: "age",
           label: "AGE",
+          visible: true,
           sortable: true,
           formatter(val) {
             return val + 5;
@@ -265,6 +305,7 @@ export default {
         },
         {
           prop: "sss",
+          visible: true,
           label: "SSS"
         }
       ],

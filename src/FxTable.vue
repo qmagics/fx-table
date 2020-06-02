@@ -23,6 +23,8 @@
         :showToggle="cOptions.asideProps.showToggle"
         position="left"
       >
+        <pre>{{cColumns}}</pre>
+
         <slot name="aside"></slot>
       </FxAside>
 
@@ -112,6 +114,8 @@
                 :handler="runAction"
               ></ActionRenderer>
 
+              <ColumnToggle :columns.sync="columns" />
+
               <FxButton
                 v-if="cOptions.fullScreenProps.showToggle"
                 type="text"
@@ -138,12 +142,13 @@
             :size="cOptions.size"
             :border="cOptions.border"
             :row-key="cOptions.rowKey"
+            :tree-props="cOptions.treeProps"
+            :lazy="cOptions.treeProps.lazy"
+            :load="cOptions.treeProps.load"
             :default-sort="defaultSort"
             :highlight-current-row="highlightCurrentRow"
-
             :show-summary="cOptions.showSummary"
             :summary-method="cOptions.summaryMethod"
-
             @sort-change="onSortChange"
             @row-click="onRowClick"
             @row-dblclick="onRowDblclick"
@@ -168,7 +173,7 @@
             ></el-table-column>
 
             <slot>
-              <FxTableColumn v-for="(c,index) in columns" :column="c" :key="(c.prop||'')+index"></FxTableColumn>
+              <FxTableColumn v-for="(c,index) in cColumns" :column="c" :key="(c.prop||'')+index"></FxTableColumn>
             </slot>
           </el-table>
         </div>
@@ -202,6 +207,7 @@ import { getCalcPagerSizes, getCssNumber, firstToUpper } from "./utils";
 import axios from "axios";
 import merge from "merge";
 import ActionRenderer from "./components/ActionRenderer.vue";
+import ColumnToggle from "./components/ColumnToggle.vue";
 
 window.merge = merge;
 
@@ -214,7 +220,8 @@ export default {
     FxSearchbar,
     FxButton,
     FxAside,
-    ActionRenderer
+    ActionRenderer,
+    ColumnToggle
   },
 
   data() {
@@ -340,8 +347,16 @@ export default {
     },
 
     cActions() {
-      console.log(this.actions);
       return this.actions;
+    },
+
+    cColumns() {
+      // if (this.$slots.default) {
+      //   console.log(this.$refs.table);
+      // } else {
+      //   return this.columns;
+      // }
+      return this.columns.filter(c => c.visible);
     },
 
     selectedRows: {
@@ -662,7 +677,7 @@ export default {
     },
 
     //当某一行被鼠标右键点击时会触发该事件
-    onRowContextmenu(row, column, event){
+    onRowContextmenu(row, column, event) {
       this.$emit("row-contextmenu", ...arguments);
     },
 
@@ -810,10 +825,6 @@ export default {
     if (this.cOptions.api) {
       await this.getData();
     }
-
-    // setInterval(_=>{
-    //   this.toggleAside();
-    // },50);
   }
 };
 </script>

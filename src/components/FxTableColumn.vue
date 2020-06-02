@@ -11,19 +11,24 @@
     :min-width="column.minWidth"
     :fixed="column.fixed"
     :formatter="column.formatter"
+    :key="Math.random()"
   >
     <template v-slot="{row}">
-      <renderComp
-        v-if="column.render"
-        :render="column.render"
-        :context="{value:row[column.prop],row}"
-      ></renderComp>
-      <span v-else-if="column.formatter" v-html="column.formatter(row[column.prop],row)"></span>
-      <span v-else>{{row[column.prop]}}</span>
-    </template>
+      <slot v-if="$scopedSlots.default" v-bind="{row,column,value:row[column.prop]}"></slot>
 
-    <template v-if="column.children && column.children.length">
-      <FxTableColumn v-for="(i,index) in column.children" :column="i" :key="i.prop+index"></FxTableColumn>
+      <template v-else>
+        <renderComp
+          v-if="column.render"
+          :render="column.render"
+          :context="{value:row[column.prop],row}"
+        ></renderComp>
+        <span v-else-if="column.formatter" v-html="column.formatter(row[column.prop],row)"></span>
+        <span v-else>{{row[column.prop]}}</span>
+      </template>
+
+      <template v-if="column.children && column.children.length">
+        <FxTableColumn v-for="(i,index) in column.children" :column="i" :key="i.prop+index"></FxTableColumn>
+      </template>
     </template>
   </el-table-column>
 </template>
