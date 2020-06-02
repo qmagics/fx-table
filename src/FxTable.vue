@@ -140,9 +140,14 @@
             :row-key="cOptions.rowKey"
             :default-sort="defaultSort"
             :highlight-current-row="highlightCurrentRow"
+
+            :show-summary="cOptions.showSummary"
+            :summary-method="cOptions.summaryMethod"
+
             @sort-change="onSortChange"
             @row-click="onRowClick"
-            @row-dblclick="$emit('row-dblclick')"
+            @row-dblclick="onRowDblclick"
+            @row-contextmenu="onRowContextmenu"
             @selection-change="onSelectionChange"
             @current-change="onCurrentChange"
           >
@@ -648,7 +653,17 @@ export default {
         this.toggleRowSelection(row);
       }
 
-      this.$emit("row-click", row, column, event);
+      this.$emit("row-click", ...arguments);
+    },
+
+    //当某一行被双击时会触发该事件
+    onRowDblclick(row, column, event) {
+      this.$emit("row-dblclick", ...arguments);
+    },
+
+    //当某一行被鼠标右键点击时会触发该事件
+    onRowContextmenu(row, column, event){
+      this.$emit("row-contextmenu", ...arguments);
     },
 
     //获取数据

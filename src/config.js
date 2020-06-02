@@ -54,6 +54,12 @@ export const DEFAULT_OPTIONS = {
         showToggle: true
     },
 
+    //是否显示合计
+    showSummary: false,
+
+    //合计方法
+    summaryMethod: null,
+
     //是否有头部
     header: false,
     //header属性

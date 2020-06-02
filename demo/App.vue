@@ -8,6 +8,7 @@
       :actions="actions"
       :query.sync="query"
       @row-click="rowClick"
+      @row-dblclick="rowDblClick"
     >
       <template #aside>
         <el-button @click="options.api='/api/CustomParts?optionType=list'">自定义组件</el-button>
@@ -166,6 +167,8 @@ export default {
 
         clickToSelect: true,
 
+        showSummary: true,
+
         // singleSelect: true,
 
         // showIndex: true,
@@ -208,7 +211,7 @@ export default {
         //   classes: "demo-header"
         // },
 
-        aside: true,
+        aside: true
         // asideProps: {
         //   width: 10,
         // },
@@ -299,6 +302,9 @@ export default {
     },
     rowClick(row) {
       // console.log(row.name)
+    },
+    rowDblClick() {
+      console.log(arguments);
     }
   }
 };
