@@ -41,4 +41,34 @@ export function reversePositionText(position) {
 export function firstToUpper(str) {
     str = str.trim();
     return str.replace(str[0], str[0].toUpperCase());
-} 
+}
+
+/**
+ * 格式化默认columns
+ * @param {any} columns 源数据
+ */
+export function genColumns(columns) {
+    return columns.map(i => {
+        return {
+            ...i,
+            visible: i.visible !== false ? true : false,
+            children: (!i.children || !i.children.length) ? [] : genColumns(i.children)
+        }
+    });
+}
+
+/**
+ * isArray
+ * @param {any} obj 
+ */
+export function isArray(obj) {
+    return Object.prototype.toString.call(obj) === '[object Array]';
+}
+
+/**
+ * isNotEmpty
+ * @param {any} obj 
+ */
+export function isNotEmpty(obj) {
+    return obj !== NaN && obj !== null && obj !== undefined && obj !== "";
+}

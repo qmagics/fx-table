@@ -23,8 +23,6 @@
         :showToggle="cOptions.asideProps.showToggle"
         position="left"
       >
-        <pre>{{cColumns}}</pre>
-
         <slot name="aside"></slot>
       </FxAside>
 
@@ -90,23 +88,6 @@
               </FxButton>
               <slot name="action"></slot>
 
-              <!-- <FxButton icon="el-icon-plus" category="dropdown" split @click="test('1')">
-                操作
-                <template slot="items">
-                  <FxButton icon="el-icon-plus" @click.native="test('item1')" category="item">item1</FxButton>
-                </template>
-              </FxButton>-->
-
-              <!-- <FxButton
-                v-for="action in cActions"
-                :key="action.code"
-                :category="action.category"
-                @click="runAction(action)"
-              >
-              {{action.name}}
-              
-              </FxButton>-->
-
               <ActionRenderer
                 v-for="action in cActions"
                 :key="action.code"
@@ -114,7 +95,7 @@
                 :handler="runAction"
               ></ActionRenderer>
 
-              <ColumnToggle :columns.sync="columns" />
+              <ColumnToggle v-if="cOptions.columnsProps.showToggle" :columns.sync="vColumns" />
 
               <FxButton
                 v-if="cOptions.fullScreenProps.showToggle"
@@ -142,7 +123,7 @@
             :size="cOptions.size"
             :border="cOptions.border"
             :row-key="cOptions.rowKey"
-            :tree-props="cOptions.treeProps"
+            :tree-props="cOptions.tree?cOptions.treeProps:{children:'',hasChildren:''}"
             :lazy="cOptions.treeProps.lazy"
             :load="cOptions.treeProps.load"
             :default-sort="defaultSort"
@@ -173,7 +154,12 @@
             ></el-table-column>
 
             <slot>
-              <FxTableColumn v-for="(c,index) in cColumns" :column="c" :key="(c.prop||'')+index"></FxTableColumn>
+              <FxTableColumn
+                v-for="(c,index) in visibleColumns"
+                :column="c"
+                :key="(c.prop||'')+index"
+                :render="slotsRender"
+              ></FxTableColumn>
             </slot>
           </el-table>
         </div>
@@ -203,13 +189,16 @@ import FxPager from "./components/FxPager.vue";
 import FxButton from "./components/FxButton.vue";
 import FxAside from "./components/FxAside.vue";
 import { DEFAULT_OPTIONS } from "./config";
-import { getCalcPagerSizes, getCssNumber, firstToUpper } from "./utils";
+import {
+  getCalcPagerSizes,
+  getCssNumber,
+  firstToUpper,
+  genColumns
+} from "./utils";
 import axios from "axios";
 import merge from "merge";
 import ActionRenderer from "./components/ActionRenderer.vue";
 import ColumnToggle from "./components/ColumnToggle.vue";
-
-window.merge = merge;
 
 export default {
   name: "FxTable",
@@ -260,6 +249,8 @@ export default {
 
       tableData: this.data,
 
+      vColumns: genColumns(this.columns),
+
       pagerModel: {
         pageIndex: pageNumber,
         pageSize: pageSize
@@ -290,7 +281,9 @@ export default {
       selected: {
         rows: [],
         row: null
-      }
+      },
+
+      currentRow: null
     };
   },
 
@@ -317,6 +310,13 @@ export default {
     tableData: {
       handler(val) {
         this.$emit("update:data", val);
+      },
+      deep: true
+    },
+
+    columns: {
+      handler(val) {
+        this.vColumns = genColumns(val);
       },
       deep: true
     },
@@ -350,13 +350,8 @@ export default {
       return this.actions;
     },
 
-    cColumns() {
-      // if (this.$slots.default) {
-      //   console.log(this.$refs.table);
-      // } else {
-      //   return this.columns;
-      // }
-      return this.columns.filter(c => c.visible);
+    visibleColumns() {
+      return this.vColumns.filter(c => c.visible);
     },
 
     selectedRows: {
@@ -404,7 +399,8 @@ export default {
     highlightCurrentRow() {
       const { selectable, singleSelect, highlightCurrentRow } = this.cOptions;
 
-      return (selectable && singleSelect) || highlightCurrentRow;
+      // return (selectable && singleSelect) || highlightCurrentRow;
+      return highlightCurrentRow;
     },
 
     cOptions: {
@@ -658,6 +654,7 @@ export default {
     //单选，当前选中项变更
     onCurrentChange(currentRow, oldCurrentRow) {
       this.selectedRows = currentRow;
+      this.currentRow = currentRow;
     },
 
     //当某一行被点击时会触发该事件
@@ -814,6 +811,11 @@ export default {
 
       //如果用户未定义thisArg,则默认在当前table上下文中调用action
       callback && callback.call(thisArg || this);
+    },
+
+    //fx-table-column的作用域插槽渲染函数
+    slotsRender(h, render, context, options) {
+      return render && render.call(this, h, context, options);
     },
 
     test(str) {

@@ -32,7 +32,7 @@ export const DEFAULT_OPTIONS = {
 
     clickToSelect: false,
 
-    highlightCurrentRow: false,
+    highlightCurrentRow: true,
 
     rowKey: '',
 
@@ -50,11 +50,11 @@ export const DEFAULT_OPTIONS = {
     //树形属性配置
     treeProps: {
         hasChildren: 'hasChildren',//是否有子节点
-        
+
         children: 'children',//子节点标识
-        
+
         lazy: true,//懒加载子节点
-        
+
         load: function (tree, treeNode, resolve) {//默认加载子节点函数
             // setTimeout(() => {
             //     resolve([
@@ -70,6 +70,11 @@ export const DEFAULT_OPTIONS = {
             //     ])
             // }, 1000)
         }
+    },
+
+    //列配置
+    columnsProps: {
+        showToggle: true,
     },
 
     //ajax结果处理函数

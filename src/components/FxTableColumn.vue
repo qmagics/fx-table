@@ -2,6 +2,7 @@
   <el-table-column
     :prop="(column.children && column.children.length)?'':column.prop"
     :label="column.label"
+    :type="column.type"
     :sortable="column.sortable?'custom':false"
     :resizable="column.resizable"
     :show-overflow-tooltip="true"
@@ -19,8 +20,10 @@
       <template v-else>
         <renderComp
           v-if="column.render"
+          :p-render="render"
           :render="column.render"
-          :context="{value:row[column.prop],row}"
+          :renderProps="column.renderProps"
+          :context="{value:row[column.prop],row,column}"
         ></renderComp>
         <span v-else-if="column.formatter" v-html="column.formatter(row[column.prop],row)"></span>
         <span v-else>{{row[column.prop]}}</span>
@@ -34,23 +37,53 @@
 </template>
 
 <script>
+import Vue from "vue";
+import { isArray, isNotEmpty } from "../utils";
+
+function getRenderFn(obj) {
+  if (typeof obj === "string") {
+    return Vue.__FxTable_presetColumnRenderers[obj];
+  }
+  return obj;
+}
+
+const renderComp = {
+  props: {
+    render: [Function, String, Array],
+    renderProps: {},
+    pRender: Function,
+    context: {}
+  },
+  render(h) {
+    let renderFn = null,
+      renderProps = this.renderProps;
+
+    if (typeof this.render === "string") {
+      renderFn = getRenderFn(this.render);
+    } else if (typeof this.render === "function") {
+      renderFn = this.render;
+    } else if (isArray(this.render)) {
+      renderFn = getRenderFn(this.render[0]);
+
+      renderProps = isNotEmpty(this.render[1]) ? this.render[1] : renderProps;
+    }
+
+    return (
+      this.pRender && this.pRender(h, renderFn, this.context, renderProps)
+    );
+  }
+};
+
 export default {
   name: "FxTableColumn",
 
   props: {
-    column: {}
+    column: {},
+    render: Function
   },
 
   components: {
-    renderComp: {
-      props: {
-        render: Function,
-        context: {}
-      },
-      render(h) {
-        return this.render(h, this.context);
-      }
-    }
+    renderComp
   }
 };
 </script>

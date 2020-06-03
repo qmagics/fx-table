@@ -31,6 +31,7 @@
         <el-button :type="code?'primary':''" @click="code=!code">code</el-button>
         <el-button :type="type?'primary':''" @click="type=!type">type</el-button>
         <!-- <p v-for="(i,index) in 6" :key="index">ASIDE</p> -->
+        <pre>{{data}}</pre>
       </template>
 
       <template #asideRight>
@@ -117,6 +118,7 @@ import FxTable, { Action, FxTableColumn } from "../src";
 import FxButton from "../src/components/FxButton.vue";
 
 Vue.use(FxTable, {
+  //注册action
   presetActions: {
     add: {
       name: "新增",
@@ -137,6 +139,29 @@ Vue.use(FxTable, {
         }
         this.$alert("打开编辑界面");
       }
+    }
+  },
+  //注册renderer
+  presetColumnRenderers: {
+    InputRenderer(h, context) {
+      return (
+        <el-input
+          size="small"
+          disabled={this.currentRow !== context.row}
+          v-model={context.row.name}
+        ></el-input>
+      );
+    },
+    InputNumberRenderer(h, context, options = {}) {
+      const { column, row, value } = context;
+      const { size } = options;
+      return (
+        <el-input-number
+          size={size}
+          disabled={this.currentRow !== row}
+          v-model={row[column.prop]}
+        ></el-input-number>
+      );
     }
   }
 });
@@ -162,26 +187,25 @@ export default {
         {
           id: 1,
           name: "JAMES",
-          age: 35,
+          age: 35
 
-          children: [
-            {
-              id: 1.1,
-              name: "LILY",
-              age: 22
-            },
-            {
-              id: 1.2,
-              name: "LuCY",
-              age: 23
-            }
-          ]
+          // children: [
+          //   {
+          //     id: 1.1,
+          //     name: "LILY",
+          //     age: 22
+          //   },
+          //   {
+          //     id: 1.2,
+          //     name: "LuCY",
+          //     age: 23
+          //   }
+          // ]
         },
         {
           id: 2,
           name: "MAY",
-          age: 17,
-          hasChildren: true
+          age: 17
         }
       ],
 
@@ -199,7 +223,20 @@ export default {
 
         // size: "small",
 
+        // showIndex:false,
+
+        tree: false,
+
+        // treeProps: {
+        //   children: "a",
+        //   hasChildren: "code"
+        // },
+
         rowKey: "id",
+
+        columnsProps: {
+          // showToggle: false
+        },
 
         selectable: true,
 
@@ -207,7 +244,7 @@ export default {
 
         // showSummary: true,
 
-        // singleSelect: true,
+        singleSelect: true,
 
         // showIndex: true,
 
@@ -231,6 +268,8 @@ export default {
 
         // border: false,
 
+        tree: true,
+
         resHandler(res) {
           res.data.rows.forEach(i => {
             i.sss = "HKUBNJU";
@@ -249,10 +288,11 @@ export default {
         //   classes: "demo-header"
         // },
 
-        aside: true
-        // asideProps: {
-        //   width: 10,
-        // },
+        aside: true,
+        asideProps: {
+          show: false,
+          showToggle: true
+        }
 
         // asideRight: true,
         // asideRightProps: {
@@ -274,47 +314,50 @@ export default {
       columns: [
         {
           prop: "name",
-          label: "NAME",
-          visible: true,
-          sortable: true
-        },
-        {
-          prop: "age",
-          label: "AGE",
-          visible: true,
-          sortable: true,
-          formatter(val) {
-            return val + 5;
-          },
+          label: "下拉",
+          type: "expand",
           render(h, context) {
-            const { value, row } = context;
-
-            function testClick() {
-              alert("testClick");
-            }
-
+            const { row } = context;
             return (
-              // <a href={"http://baidu.com/s?wd=" + value} target="_blank">
-              //   {"去百度搜索" + value}
-              // </a>
-              <el-button size="mini" onClick={testClick}>
-                {value}
-              </el-button>
+              <el-form label-position="left" class="demo-table-expand">
+                <el-form-item label="姓名">
+                  <span>{row.name}</span>
+                </el-form-item>
+                <el-form-item label="年龄">
+                  <span>{row.age}</span>
+                </el-form-item>
+                <el-form-item label="说明">
+                  <span>
+                    所富含淀粉虽然和肉体和让她以后人体摄入热水让他会让他而瘫痪让她
+                  </span>
+                </el-form-item>
+              </el-form>
             );
           }
         },
         {
+          prop: "name",
+          label: "NAME",
+          sortable: true,
+          render: "InputRenderer"
+        },
+        {
+          prop: "age",
+          label: "AGE",
+          sortable: true,
+          render: "InputNumberRenderer"
+        },
+        {
           prop: "sss",
-          visible: true,
           label: "SSS"
         }
       ],
 
       actions: [
         new Action({
-          name: "添加",
+          name: "操作",
           icon: "el-icon-apple",
-          category: "group",
+          category: "dropdown",
           children: [new Action("add"), new Action("edit")]
         })
       ]
