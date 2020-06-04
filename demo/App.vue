@@ -30,8 +30,10 @@
         <el-button :type="name?'primary':''" @click="name=!name">ddd</el-button>
         <el-button :type="code?'primary':''" @click="code=!code">code</el-button>
         <el-button :type="type?'primary':''" @click="type=!type">type</el-button>
+        <div v-for="i in data" :key="i.id">
+          <el-input v-model="i.name"></el-input>
+        </div>
         <!-- <p v-for="(i,index) in 6" :key="index">ASIDE</p> -->
-        <pre>{{data}}</pre>
       </template>
 
       <template #asideRight>
@@ -101,9 +103,7 @@
     </FxTable>
   </div>
 
-  <!-- <div class="box">
-      <FxTable :data.sync="data2" :options="options" :columns="columns"></FxTable>
-    </div>
+  <!-- 
 
     <div class="box">
       <FxTable :data.sync="data3" :options="options" :columns="columns"></FxTable>
@@ -116,6 +116,17 @@
 import Vue from "vue";
 import FxTable, { Action, FxTableColumn } from "../src";
 import FxButton from "../src/components/FxButton.vue";
+// import axios from "axios";
+
+const save = (api, method, queryParams) => {
+  // const { data, status } = await axios[method.toLowerCase()](api, queryParams);
+
+  return new Promise((y, n) => {
+    setTimeout(_ => {
+      y();
+    }, 2000);
+  });
+};
 
 Vue.use(FxTable, {
   //注册action
@@ -141,26 +152,108 @@ Vue.use(FxTable, {
       }
     }
   },
+
   //注册renderer
   presetColumnRenderers: {
     InputRenderer(h, context) {
+      const { row, value, column } = context;
+
+      let isCurrent = this.currentRow === row;
+
       return (
-        <el-input
-          size="small"
-          disabled={this.currentRow !== context.row}
-          v-model={context.row.name}
-        ></el-input>
+        <div>
+          {isCurrent ? (
+            <el-input size="small" disabled={row.$runtime.pending} v-model={row[column.prop]}></el-input>
+          ) : (
+            <span>{value}</span>
+          )}
+        </div>
       );
     },
+
     InputNumberRenderer(h, context, options = {}) {
       const { column, row, value } = context;
       const { size } = options;
+
+      let isCurrent = this.currentRow === row;
+
       return (
-        <el-input-number
-          size={size}
-          disabled={this.currentRow !== row}
-          v-model={row[column.prop]}
-        ></el-input-number>
+        <div>
+          {isCurrent ? (
+            <el-input-number
+              disabled={row.$runtime.pending}
+              size={size}
+              v-model={row[column.prop]}
+            ></el-input-number>
+          ) : (
+            <span>{value}</span>
+          )}
+        </div>
+      );
+    },
+
+    SelectRenderer(h, context, options = {}) {
+      const { column, row, value } = context;
+
+      let { selections, labelProp } = options;
+
+      let isCurrent = this.currentRow === row;
+
+      selections = selections || [
+        {
+          label: "AAA",
+          value: "aaa"
+        },
+        {
+          label: "BBB",
+          value: "bbb"
+        },
+        {
+          label: "CCC",
+          value: "ccc"
+        }
+      ];
+
+      const selectedItem = selections.find(i => i.value === value);
+
+      return (
+        <div>
+          {isCurrent ? (
+            <el-select v-model={row[column.prop]} disabled={row.$runtime.pending}>
+              {selections.map(o => (
+                <el-option label={o.label} value={o.value}></el-option>
+              ))}
+            </el-select>
+          ) : (
+            <span>
+              {selectedItem ? selectedItem.label : row[labelProp] || value}
+            </span>
+          )}
+        </div>
+      );
+    },
+
+    SaveRenderer(h, context, options = {}) {
+      const { api, method = "get", queryParams } = options;
+      const { row } = context;
+
+      return (
+        <div>
+          <el-button
+            type="success"
+            plain
+            on-click={async () => {
+              row.$runtime.pending = true;
+              await save(api, method, row);
+              this.$message.info("保存成功！");
+              row.$runtime.pending = false;
+            }}
+            loading={row.$runtime.pending}
+            icon="el-icon-check"
+          >
+            保存
+          </el-button>
+        </div>
       );
     }
   }
@@ -183,31 +276,42 @@ export default {
         // "container"
       ],
 
-      data: [
-        {
-          id: 1,
-          name: "JAMES",
-          age: 35
-
-          // children: [
-          //   {
-          //     id: 1.1,
-          //     name: "LILY",
-          //     age: 22
-          //   },
-          //   {
-          //     id: 1.2,
-          //     name: "LuCY",
-          //     age: 23
-          //   }
-          // ]
-        },
-        {
-          id: 2,
-          name: "MAY",
-          age: 17
+      data: (function() {
+        let arr = [];
+        for (let i = 0; i < 24; i++) {
+          arr = arr.concat([
+            {
+              id: "a" + i,
+              name: "JAMES",
+              age: 35,
+              foodId: "milk",
+              foodName: "牛奶"
+            },
+            {
+              id: "b" + i,
+              name: "MAY",
+              age: 17,
+              foodId: "cake",
+              foodName: "蛋糕"
+            },
+            {
+              id: "c" + i,
+              name: "LILEI",
+              age: 23,
+              foodId: "noodles",
+              foodName: "面条"
+            },
+            {
+              id: "d" + i,
+              name: "TEA",
+              age: 21,
+              foodId: "tea",
+              foodName: ""
+            }
+          ]);
         }
-      ],
+        return arr;
+      })(),
 
       query: {
         key: ""
@@ -224,6 +328,8 @@ export default {
         // size: "small",
 
         // showIndex:false,
+
+        highlightCurrentRow: false,
 
         tree: false,
 
@@ -266,18 +372,18 @@ export default {
 
         // pageSize: 2,
 
-        // border: false,
+        // border: true,
 
         tree: true,
 
-        resHandler(res) {
-          res.data.rows.forEach(i => {
-            i.sss = "HKUBNJU";
-            i.age = 22;
-          });
+        // resHandler(res) {
+        //   res.data.rows.forEach(i => {
+        //     i.sss = "HKUBNJU";
+        //     i.age = 22;
+        //   });
 
-          return res.data;
-        },
+        //   return res.data;
+        // },
 
         // footer: true,
 
@@ -311,7 +417,20 @@ export default {
         // },
       },
 
-      columns: [
+      actions: [
+        new Action({
+          name: "操作",
+          icon: "el-icon-apple",
+          category: "dropdown",
+          children: [new Action("add"), new Action("edit")]
+        })
+      ]
+    };
+  },
+
+  computed: {
+    columns() {
+      return [
         {
           prop: "name",
           label: "下拉",
@@ -348,20 +467,38 @@ export default {
           render: "InputNumberRenderer"
         },
         {
-          prop: "sss",
-          label: "SSS"
+          prop: "foodId",
+          label: "食物",
+          render: "SelectRenderer",
+          renderProps: {
+            selections: [
+              {
+                label: "牛奶",
+                value: "milk"
+              },
+              {
+                label: "蛋糕",
+                value: "cake"
+              },
+              {
+                label: "冰淇凌",
+                value: "icecream"
+              }
+            ],
+            labelProp: "foodName"
+          }
+        },
+        {
+          prop: "id",
+          label: "操作",
+          render: "SaveRenderer",
+          renderProps: {
+            api: "/api/save",
+            method: "put"
+          }
         }
-      ],
-
-      actions: [
-        new Action({
-          name: "操作",
-          icon: "el-icon-apple",
-          category: "dropdown",
-          children: [new Action("add"), new Action("edit")]
-        })
-      ]
-    };
+      ];
+    }
   },
 
   // computed:{
@@ -385,10 +522,10 @@ export default {
       console.log(this.$refs.table.selectedRows);
     },
     rowClick(row) {
-      // console.log(row.name)
+      console.log("rowClick", row.name);
     },
     rowDblClick() {
-      console.log(arguments);
+      console.log("rowDblClick", arguments);
     }
   }
 };

@@ -72,3 +72,49 @@ export function isArray(obj) {
 export function isNotEmpty(obj) {
     return obj !== NaN && obj !== null && obj !== undefined && obj !== "";
 }
+
+/**
+ * 装饰表格数据
+ * @param {array} rows 源数据
+ */
+export function decorateData(rows) {
+    // return [
+    //     {
+    //         id: "a",
+    //         name: "JAMES",
+    //         age: 35,
+    //         foodId: "milk",
+    //         foodName: "牛奶",
+    //         $runtime: {
+    //             pending: false
+    //         }
+    //     },
+    //     {
+    //         id: "b",
+    //         name: "MAY",
+    //         age: 17,
+    //         foodId: "cake",
+    //         foodName: "蛋糕",
+    //         $runtime: {
+    //             pending: false
+    //         }
+    //     }
+    // ];
+    // rows.forEach(row => {
+    //     if (!row.$runtime) {
+    //         row.$runtime = {
+    //             pending: false,
+    //         }
+    //     }
+    // })
+    // return rows;
+
+    return rows.map(row => {
+        return {
+            ...row,
+            $runtime: {
+                pending: false,
+            }
+        }
+    });
+}

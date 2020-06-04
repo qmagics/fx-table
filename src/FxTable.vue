@@ -24,6 +24,7 @@
         position="left"
       >
         <slot name="aside"></slot>
+        <pre>currentRow:{{currentRow}}</pre>
       </FxAside>
 
       <FxAside
@@ -193,7 +194,8 @@ import {
   getCalcPagerSizes,
   getCssNumber,
   firstToUpper,
-  genColumns
+  genColumns,
+  decorateData
 } from "./utils";
 import axios from "axios";
 import merge from "merge";
@@ -247,7 +249,7 @@ export default {
 
       superSearch: false,
 
-      tableData: this.data,
+      tableData: decorateData(this.data),
 
       vColumns: genColumns(this.columns),
 
@@ -283,6 +285,7 @@ export default {
         row: null
       },
 
+      //当前行
       currentRow: null
     };
   },
@@ -300,12 +303,12 @@ export default {
   },
 
   watch: {
-    data: {
-      handler(val) {
-        this.tableData = val;
-      },
-      deep: true
-    },
+    // data: {
+    //   handler(val) {
+    //     this.tableData = decorateData(val);
+    //   },
+    //   deep: true
+    // },
 
     tableData: {
       handler(val) {
@@ -422,6 +425,10 @@ export default {
 
       if (this.cOptions.outBorder) {
         classes.push("is--out-border");
+      }
+
+      if (this.data.length >= 50) {
+        classes.push("is--no-transition");
       }
 
       return classes;
@@ -651,7 +658,7 @@ export default {
       this.selectedRows = selection;
     },
 
-    //单选，当前选中项变更
+    //当前项变更
     onCurrentChange(currentRow, oldCurrentRow) {
       this.selectedRows = currentRow;
       this.currentRow = currentRow;
@@ -694,10 +701,10 @@ export default {
 
         if (this.cOptions.pagination) {
           const { rows, total } = res;
-          this.tableData = rows;
+          this.tableData = decorateData(rows);
           this.pagerConfig.total = total;
         } else {
-          this.tableData = res;
+          this.tableData = decorateData(res);
         }
         this.loading = false;
       } catch (error) {

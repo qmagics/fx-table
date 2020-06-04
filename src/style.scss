@@ -1,12 +1,16 @@
 .fx-table {
   box-sizing: border-box;
 
+  *{
+    box-sizing: border-box;
+  }
+
   &.is--out-border{
     border:1px solid #EBEEF5;
   }
-  
-  *{
-    box-sizing: border-box;
+
+  &.is--no-transition *{
+    transition: none !important;
   }
 
   &.is--show-aside{

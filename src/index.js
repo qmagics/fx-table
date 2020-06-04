@@ -1,8 +1,13 @@
-// import Vue from 'vue';
+import Vue from 'vue';
 // import ElementUI from 'element-ui';
 // Vue.use(ElementUI);
 
 import FxTable from './FxTable.vue';
+
+// 动态注册action
+// FxTable.presetActions = (actions) => {
+//     Vue.__FxTable_presetActions = actions;
+// }
 
 FxTable.install = (Vue, opt) => {
     Vue.component(FxTable.name, FxTable);

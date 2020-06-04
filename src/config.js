@@ -6,7 +6,7 @@ export const DEFAULT_OPTIONS = {
 
     width: '100%',
 
-    border: false,
+    border: true,
 
     outBorder: true,
 
