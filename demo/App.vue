@@ -27,12 +27,11 @@
         <el-button @click="options.api='/api/CustomParts?optionType=list'">自定义组件</el-button>
         <el-button @click="options.api='/api/UserComponent?optionType=list'">用户组件</el-button>
 
-        <el-button :type="name?'primary':''" @click="name=!name">ddd</el-button>
-        <el-button :type="code?'primary':''" @click="code=!code">code</el-button>
-        <el-button :type="type?'primary':''" @click="type=!type">type</el-button>
-        <div v-for="i in data" :key="i.id">
+        <div v-for="i in data" :key="i.id" style="margin-bottom:5px;padding:0 10px">
           <el-input v-model="i.name"></el-input>
         </div>
+
+        <el-button @click="addRow">AddRow</el-button>
         <!-- <p v-for="(i,index) in 6" :key="index">ASIDE</p> -->
       </template>
 
@@ -128,6 +127,16 @@ const save = (api, method, queryParams) => {
   });
 };
 
+const del = (api, method, queryParams) => {
+  // const { data, status } = await axios[method.toLowerCase()](api, queryParams);
+
+  return new Promise((y, n) => {
+    setTimeout(_ => {
+      y();
+    }, 2000);
+  });
+};
+
 Vue.use(FxTable, {
   //注册action
   presetActions: {
@@ -161,9 +170,22 @@ Vue.use(FxTable, {
       let isCurrent = this.currentRow === row;
 
       return (
-        <div>
+        <div class="cell-inner">
           {isCurrent ? (
-            <el-input size="small" disabled={row.$runtime.pending} v-model={row[column.prop]}></el-input>
+            <el-input
+              size="small"
+              disabled={row.$runtime.pending}
+              v-model={row[column.prop]}
+            >
+              <i
+                onClick={() => {
+                  alert(value);
+                }}
+                style="cursor:pointer;"
+                class="el-input__icon el-icon-more"
+                slot="suffix"
+              ></i>
+            </el-input>
           ) : (
             <span>{value}</span>
           )}
@@ -219,7 +241,10 @@ Vue.use(FxTable, {
       return (
         <div>
           {isCurrent ? (
-            <el-select v-model={row[column.prop]} disabled={row.$runtime.pending}>
+            <el-select
+              v-model={row[column.prop]}
+              disabled={row.$runtime.pending}
+            >
               {selections.map(o => (
                 <el-option label={o.label} value={o.value}></el-option>
               ))}
@@ -233,7 +258,7 @@ Vue.use(FxTable, {
       );
     },
 
-    SaveRenderer(h, context, options = {}) {
+    HandlerRenderer(h, context, options = {}) {
       const { api, method = "get", queryParams } = options;
       const { row } = context;
 
@@ -252,6 +277,21 @@ Vue.use(FxTable, {
             icon="el-icon-check"
           >
             保存
+          </el-button>
+          <el-button
+            type="danger"
+            plain
+            on-click={async () => {
+              row.$runtime.pending = true;
+              await del(api, method, row);
+              this.$message.info("删除成功！");
+              row.$runtime.pending = false;
+              this.removeRowByKey(row[this.rowKey]);
+            }}
+            loading={row.$runtime.pending}
+            icon="el-icon-delete"
+          >
+            删除
           </el-button>
         </div>
       );
@@ -278,14 +318,30 @@ export default {
 
       data: (function() {
         let arr = [];
-        for (let i = 0; i < 24; i++) {
+        for (let i = 0; i < 1; i++) {
           arr = arr.concat([
             {
               id: "a" + i,
               name: "JAMES",
               age: 35,
               foodId: "milk",
-              foodName: "牛奶"
+              foodName: "牛奶",
+              children: [
+                {
+                  id: "b" + i + "a",
+                  name: "MAY_1",
+                  age: 317,
+                  foodId: "cake",
+                  foodName: "蛋糕"
+                },
+                {
+                  id: "b" + i + "b",
+                  name: "MAY_2",
+                  age: 59,
+                  foodId: "cake",
+                  foodName: "蛋糕"
+                }
+              ]
             },
             {
               id: "b" + i,
@@ -338,7 +394,7 @@ export default {
         //   hasChildren: "code"
         // },
 
-        rowKey: "id",
+        rowKey: "age",
 
         columnsProps: {
           // showToggle: false
@@ -431,29 +487,29 @@ export default {
   computed: {
     columns() {
       return [
-        {
-          prop: "name",
-          label: "下拉",
-          type: "expand",
-          render(h, context) {
-            const { row } = context;
-            return (
-              <el-form label-position="left" class="demo-table-expand">
-                <el-form-item label="姓名">
-                  <span>{row.name}</span>
-                </el-form-item>
-                <el-form-item label="年龄">
-                  <span>{row.age}</span>
-                </el-form-item>
-                <el-form-item label="说明">
-                  <span>
-                    所富含淀粉虽然和肉体和让她以后人体摄入热水让他会让他而瘫痪让她
-                  </span>
-                </el-form-item>
-              </el-form>
-            );
-          }
-        },
+        // {
+        //   prop: "name",
+        //   label: "下拉",
+        //   type: "expand",
+        //   render(h, context) {
+        //     const { row } = context;
+        //     return (
+        //       <el-form label-position="left" class="demo-table-expand">
+        //         <el-form-item label="姓名">
+        //           <span>{row.name}</span>
+        //         </el-form-item>
+        //         <el-form-item label="年龄">
+        //           <span>{row.age}</span>
+        //         </el-form-item>
+        //         <el-form-item label="说明">
+        //           <span>
+        //             所富含淀粉虽然和肉体和让她以后人体摄入热水让他会让他而瘫痪让她
+        //           </span>
+        //         </el-form-item>
+        //       </el-form>
+        //     );
+        //   }
+        // },
         {
           prop: "name",
           label: "NAME",
@@ -491,7 +547,7 @@ export default {
         {
           prop: "id",
           label: "操作",
-          render: "SaveRenderer",
+          render: "HandlerRenderer",
           renderProps: {
             api: "/api/save",
             method: "put"
@@ -522,13 +578,36 @@ export default {
       console.log(this.$refs.table.selectedRows);
     },
     rowClick(row) {
-      console.log("rowClick", row.name);
+      console.log("rowClick", arguments);
     },
     rowDblClick() {
       console.log("rowDblClick", arguments);
+    },
+
+    addRow() {
+      this.$refs.table.insertRow(
+        {
+          id: ++count,
+          name: "JJKI",
+          age: 10,
+          foodId: "milk",
+          foodName: "牛奶",
+          children: [
+            {
+              id: ++count,
+              name: "CCC",
+              age: 10,
+              foodId: "milk",
+              foodName: "牛奶"
+            }
+          ]
+        },
+        1
+      );
     }
   }
 };
+var count = 1;
 </script>
 
 <style lang="scss">
@@ -554,5 +633,9 @@ body {
 
 .demo-header {
   text-align: center;
+}
+
+.cell-inner {
+  display: inline-block;
 }
 </style>

@@ -195,7 +195,9 @@ import {
   getCssNumber,
   firstToUpper,
   genColumns,
-  decorateData
+  decorateData,
+  decorateRow,
+  isNotEmpty
 } from "./utils";
 import axios from "axios";
 import merge from "merge";
@@ -234,6 +236,10 @@ export default {
       fullScreen
     } = merge.recursive(true, {}, DEFAULT_OPTIONS, this.options);
 
+    const tableData = decorateData(this.data);
+
+    this.$emit("update:data", tableData);
+
     return {
       fullScreen: fullScreen,
 
@@ -249,7 +255,7 @@ export default {
 
       superSearch: false,
 
-      tableData: decorateData(this.data),
+      tableData: tableData,
 
       vColumns: genColumns(this.columns),
 
@@ -303,12 +309,12 @@ export default {
   },
 
   watch: {
-    // data: {
-    //   handler(val) {
-    //     this.tableData = decorateData(val);
-    //   },
-    //   deep: true
-    // },
+    data: {
+      handler(val) {
+        this.tableData = val;
+      },
+      deep: true
+    },
 
     tableData: {
       handler(val) {
@@ -604,6 +610,10 @@ export default {
 
     api() {
       return this.cOptions.api;
+    },
+
+    rowKey() {
+      return this.cOptions.rowKey;
     }
   },
 
@@ -818,6 +828,45 @@ export default {
 
       //如果用户未定义thisArg,则默认在当前table上下文中调用action
       callback && callback.call(thisArg || this);
+    },
+
+    //插入行
+    insertRow(row, index) {
+      const _row = decorateRow(row);
+
+      if (typeof index !== "number") {
+        this.tableData.push(_row);
+      } else {
+        this.tableData.splice(index, 0, _row);
+      }
+    },
+
+    /**
+     *删除行
+     */
+    removeRow(row) {
+      if (!row) return;
+
+      this.removeRowByIndex(this.tableData.indexOf(row));
+    },
+
+    removeRowByKey(id) {
+      const row = this.getRowByKey(id);
+
+      this.removeRow(row);
+    },
+
+    removeRowByIndex(index) {
+      if (index < 0) return;
+
+      this.tableData.splice(index, 1);
+    },
+
+    /**
+     * 通过唯一id获取行数据
+     */
+    getRowByKey(id) {
+      return this.tableData.find(i => i[this.rowKey] === id);
     },
 
     //fx-table-column的作用域插槽渲染函数

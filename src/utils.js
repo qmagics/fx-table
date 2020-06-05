@@ -110,11 +110,20 @@ export function decorateData(rows) {
     // return rows;
 
     return rows.map(row => {
-        return {
-            ...row,
-            $runtime: {
-                pending: false,
-            }
-        }
+        return decorateRow(row);
     });
+}
+
+/**
+ * 装饰数据行
+ * @param {any} row 
+ */
+export function decorateRow(row) {
+    return {
+        ...row,
+        $runtime: {
+            pending: false,
+        },
+        children: (row.children && row.children.length) ? row.children.map(i => decorateRow(i)) : []
+    }
 }
