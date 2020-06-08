@@ -78,51 +78,25 @@ export function isNotEmpty(obj) {
  * @param {array} rows 源数据
  */
 export function decorateData(rows) {
-    // return [
-    //     {
-    //         id: "a",
-    //         name: "JAMES",
-    //         age: 35,
-    //         foodId: "milk",
-    //         foodName: "牛奶",
-    //         $runtime: {
-    //             pending: false
-    //         }
-    //     },
-    //     {
-    //         id: "b",
-    //         name: "MAY",
-    //         age: 17,
-    //         foodId: "cake",
-    //         foodName: "蛋糕",
-    //         $runtime: {
-    //             pending: false
-    //         }
-    //     }
-    // ];
-    // rows.forEach(row => {
-    //     if (!row.$runtime) {
-    //         row.$runtime = {
-    //             pending: false,
-    //         }
-    //     }
-    // })
-    // return rows;
-
     return rows.map(row => {
         return decorateRow(row);
     });
 }
+
+import Vue from 'vue';
 
 /**
  * 装饰数据行
  * @param {any} row 
  */
 export function decorateRow(row) {
+    const presetRowStates = Vue.__FxTable_presetRowStates;
+
     return {
         ...row,
-        $runtime: {
-            pending: false,
+        $state: {
+            // pending: false,
+            ...presetRowStates
         },
         children: (row.children && row.children.length) ? row.children.map(i => decorateRow(i)) : []
     }

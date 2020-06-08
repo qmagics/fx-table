@@ -138,6 +138,11 @@ const del = (api, method, queryParams) => {
 };
 
 Vue.use(FxTable, {
+  //注册行状态
+  presetRowStates: {
+    pending: false
+  },
+
   //注册action
   presetActions: {
     add: {
@@ -174,7 +179,7 @@ Vue.use(FxTable, {
           {isCurrent ? (
             <el-input
               size="small"
-              disabled={row.$runtime.pending}
+              disabled={row.$state.pending}
               v-model={row[column.prop]}
             >
               <i
@@ -203,7 +208,7 @@ Vue.use(FxTable, {
         <div>
           {isCurrent ? (
             <el-input-number
-              disabled={row.$runtime.pending}
+              disabled={row.$state.pending}
               size={size}
               v-model={row[column.prop]}
             ></el-input-number>
@@ -241,10 +246,7 @@ Vue.use(FxTable, {
       return (
         <div>
           {isCurrent ? (
-            <el-select
-              v-model={row[column.prop]}
-              disabled={row.$runtime.pending}
-            >
+            <el-select v-model={row[column.prop]} disabled={row.$state.pending}>
               {selections.map(o => (
                 <el-option label={o.label} value={o.value}></el-option>
               ))}
@@ -268,12 +270,15 @@ Vue.use(FxTable, {
             type="success"
             plain
             on-click={async () => {
-              row.$runtime.pending = true;
+              row.$state.pending = true;
+              row.$state.saving = true;
               await save(api, method, row);
               this.$message.info("保存成功！");
-              row.$runtime.pending = false;
+              row.$state.pending = false;
+              row.$state.saving = false;
             }}
-            loading={row.$runtime.pending}
+            disabled={row.$state.pending}
+            loading={row.$state.saving}
             icon="el-icon-check"
           >
             保存
@@ -282,13 +287,16 @@ Vue.use(FxTable, {
             type="danger"
             plain
             on-click={async () => {
-              row.$runtime.pending = true;
+              row.$state.deleting = true;
+              row.$state.pending = true;
               await del(api, method, row);
               this.$message.info("删除成功！");
-              row.$runtime.pending = false;
+              row.$state.pending = false;
+              row.$state.deleting = false;
               this.removeRowByKey(row[this.rowKey]);
             }}
-            loading={row.$runtime.pending}
+            disabled={row.$state.pending}
+            loading={row.$state.deleting}
             icon="el-icon-delete"
           >
             删除
@@ -377,6 +385,11 @@ export default {
       data3: [],
 
       options: {
+        presetRowStates: {
+          saving: false,
+          deleting: false
+        },
+
         // api: "/api/UserComponent?optionType=list",
 
         // background: "#fff",
@@ -394,7 +407,7 @@ export default {
         //   hasChildren: "code"
         // },
 
-        rowKey: "age",
+        // rowKey: "age",
 
         columnsProps: {
           // showToggle: false

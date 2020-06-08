@@ -233,10 +233,15 @@ export default {
       asideBottomProps,
       asideTop,
       asideTopProps,
-      fullScreen
+      fullScreen,
+      presetRowStates
     } = merge.recursive(true, {}, DEFAULT_OPTIONS, this.options);
 
-    const tableData = decorateData(this.data);
+    const tableData = this.decorateData(this.data, {
+      ...Vue.__FxTable_presetRowStates,
+      ...presetRowStates
+    });
+    // const tableData = this.data;
 
     this.$emit("update:data", tableData);
 
@@ -361,6 +366,13 @@ export default {
 
     visibleColumns() {
       return this.vColumns.filter(c => c.visible);
+    },
+
+    cPresetRowStates() {
+      return {
+        ...Vue.__FxTable_presetRowStates,
+        ...this.cOptions.presetRowStates
+      };
     },
 
     selectedRows: {
@@ -711,10 +723,10 @@ export default {
 
         if (this.cOptions.pagination) {
           const { rows, total } = res;
-          this.tableData = decorateData(rows);
+          this.tableData = this.decorateData(rows);
           this.pagerConfig.total = total;
         } else {
-          this.tableData = decorateData(res);
+          this.tableData = this.decorateData(res);
         }
         this.loading = false;
       } catch (error) {
@@ -832,7 +844,7 @@ export default {
 
     //插入行
     insertRow(row, index) {
-      const _row = decorateRow(row);
+      const _row = this.decorateRow(row);
 
       if (typeof index !== "number") {
         this.tableData.push(_row);
@@ -872,6 +884,35 @@ export default {
     //fx-table-column的作用域插槽渲染函数
     slotsRender(h, render, context, options) {
       return render && render.call(this, h, context, options);
+    },
+
+    /**
+     * 装饰数据行
+     * @param {any} row
+     */
+    decorateRow(row, presetRowStates) {
+      presetRowStates = presetRowStates || this.cPresetRowStates;
+
+      return {
+        ...row,
+        $state: {
+          ...presetRowStates
+        },
+        children:
+          row.children && row.children.length
+            ? row.children.map(i => this.decorateRow(i))
+            : []
+      };
+    },
+
+    /**
+     * 装饰表格数据
+     * @param {array} rows 源数据
+     */
+    decorateData(rows, presetRowStates) {
+      return rows.map(row => {
+        return this.decorateRow(row, presetRowStates);
+      });
     },
 
     test(str) {

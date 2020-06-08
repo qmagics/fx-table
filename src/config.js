@@ -1,5 +1,8 @@
 //默认配置项
 export const DEFAULT_OPTIONS = {
+    //实例级别预设行状态
+    presetRowStates: null,
+
     background: '#fff',
 
     height: '100%',
