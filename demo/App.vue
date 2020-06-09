@@ -307,10 +307,6 @@ Vue.use(FxTable, {
   }
 });
 
-import CellSelect from "./cell-components/CellSelect";
-
-// Vue.component(CellSelect.name, CellSelect);
-
 export default {
   components: {
     FxButton,
@@ -504,29 +500,6 @@ export default {
   computed: {
     columns() {
       return [
-        // {
-        //   prop: "name",
-        //   label: "下拉",
-        //   type: "expand",
-        //   render(h, context) {
-        //     const { row } = context;
-        //     return (
-        //       <el-form label-position="left" class="demo-table-expand">
-        //         <el-form-item label="姓名">
-        //           <span>{row.name}</span>
-        //         </el-form-item>
-        //         <el-form-item label="年龄">
-        //           <span>{row.age}</span>
-        //         </el-form-item>
-        //         <el-form-item label="说明">
-        //           <span>
-        //             所富含淀粉虽然和肉体和让她以后人体摄入热水让他会让他而瘫痪让她
-        //           </span>
-        //         </el-form-item>
-        //       </el-form>
-        //     );
-        //   }
-        // },
         {
           prop: "name",
           label: "NAME",
@@ -542,7 +515,7 @@ export default {
         {
           prop: "foodId",
           label: "食物",
-          component: CellSelect,
+          component: () => import("./cell-components/CellSelect"),
           componentProps: {
             selections: [
               {
@@ -609,6 +582,12 @@ export default {
   },
 
   methods: {
+    addDlg() {
+      this.dlgs.push({
+        visible: true,
+        component: import("./cell-components/CellSelect")
+      });
+    },
     getSelected() {
       // const selected = this.$refs.table.getSelected();
       console.log(this.$refs.table.selectedRows);

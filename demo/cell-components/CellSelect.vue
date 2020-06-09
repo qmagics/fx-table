@@ -10,7 +10,7 @@
 <script>
 export default {
   name: "CellSelect",
-  
+
   props: ["value", "row", "column", "currentRow", "selections", "labelProp"],
 
   computed: {
@@ -23,6 +23,3 @@ export default {
   }
 };
 </script>
-
-<style>
-</style>

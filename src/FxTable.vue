@@ -24,7 +24,7 @@
         position="left"
       >
         <slot name="aside"></slot>
-        <pre>currentRow:{{currentRow}}</pre>
+        <!-- <pre>currentRow:{{currentRow}}</pre> -->
       </FxAside>
 
       <FxAside
