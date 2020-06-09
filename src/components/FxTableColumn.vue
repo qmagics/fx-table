@@ -18,8 +18,17 @@
       <slot v-if="$scopedSlots.default" v-bind="{row,column,value:row[column.prop]}"></slot>
 
       <template v-else>
+        <component
+          v-if="column.component"
+          :is="column.component"
+          v-bind="column.componentProps"
+          v-model="row[column.prop]"
+          :row="row"
+          :column="column"
+          :currentRow="currentRow"
+        ></component>
         <renderComp
-          v-if="column.render"
+          v-else-if="column.render"
           :p-render="render"
           :render="column.render"
           :renderProps="column.renderProps"
@@ -68,9 +77,7 @@ const renderComp = {
       renderProps = isNotEmpty(this.render[1]) ? this.render[1] : renderProps;
     }
 
-    return (
-      this.pRender && this.pRender(h, renderFn, this.context, renderProps)
-    );
+    return this.pRender && this.pRender(h, renderFn, this.context, renderProps);
   }
 };
 
@@ -79,7 +86,8 @@ export default {
 
   props: {
     column: {},
-    render: Function
+    render: Function,
+    currentRow: {}
   },
 
   components: {

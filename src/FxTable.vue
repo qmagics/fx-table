@@ -7,11 +7,11 @@
       :style="headerStyle"
     >
       <slot name="header">
-        <p>
+        <!-- <p>
           showAside:{{showAside}}
           &nbsp;&nbsp;
           fullScreen:{{fullScreen}}
-        </p>
+        </p> -->
       </slot>
     </div>
 
@@ -160,6 +160,7 @@
                 :column="c"
                 :key="(c.prop||'')+index"
                 :render="slotsRender"
+                :currentRow="currentRow"
               ></FxTableColumn>
             </slot>
           </el-table>

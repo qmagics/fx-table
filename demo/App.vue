@@ -307,6 +307,10 @@ Vue.use(FxTable, {
   }
 });
 
+import CellSelect from "./cell-components/CellSelect";
+
+// Vue.component(CellSelect.name, CellSelect);
+
 export default {
   components: {
     FxButton,
@@ -538,8 +542,8 @@ export default {
         {
           prop: "foodId",
           label: "食物",
-          render: "SelectRenderer",
-          renderProps: {
+          component: CellSelect,
+          componentProps: {
             selections: [
               {
                 label: "牛奶",
@@ -556,6 +560,25 @@ export default {
             ],
             labelProp: "foodName"
           }
+
+          // render: "SelectRenderer",
+          // renderProps: {
+          //   selections: [
+          //     {
+          //       label: "牛奶",
+          //       value: "milk"
+          //     },
+          //     {
+          //       label: "蛋糕",
+          //       value: "cake"
+          //     },
+          //     {
+          //       label: "冰淇凌",
+          //       value: "icecream"
+          //     }
+          //   ],
+          //   labelProp: "foodName"
+          // }
         },
         {
           prop: "id",
