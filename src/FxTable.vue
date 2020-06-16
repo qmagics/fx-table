@@ -11,7 +11,7 @@
           showAside:{{showAside}}
           &nbsp;&nbsp;
           fullScreen:{{fullScreen}}
-        </p> -->
+        </p>-->
       </slot>
     </div>
 
@@ -307,7 +307,10 @@ export default {
 
     options: {},
 
-    data: {},
+    data: {
+      type: Array,
+      default: () => []
+    },
 
     query: {},
 
