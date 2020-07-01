@@ -5,6 +5,8 @@ const webpack = require('webpack');
 
 module.exports = [
     {
+        target: 'webworker',
+
         mode: 'production',
 
         entry: {
@@ -18,7 +20,9 @@ module.exports = [
 
             library: 'fx-table',
 
-            libraryTarget: 'umd'
+            libraryTarget: 'umd',
+
+            globalObject: `typeof self !== 'undefined' ? self : this`
         },
 
         resolve: {
