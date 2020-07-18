@@ -343,6 +343,10 @@ Vue.use(FxTable, {
         </div>
       );
     }
+  },
+
+  defaultOptions: {
+    toolbar: false
   }
 });
 
@@ -511,7 +515,7 @@ export default {
         asideProps: {
           show: false,
           showToggle: true
-        }
+        },
 
         // asideRight: true,
         // asideRightProps: {
@@ -528,6 +532,8 @@ export default {
         // asideTopProps: {
         //   height: 10
         // },
+
+        // toolbar: false
       },
 
       actions: [

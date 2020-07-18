@@ -436,7 +436,14 @@ export default {
 
     cOptions: {
       get() {
-        return merge.recursive(true, true, {}, DEFAULT_OPTIONS, this.options);
+        return merge.recursive(
+          true,
+          true,
+          {},
+          DEFAULT_OPTIONS,
+          Vue.__FxTable_defaultOptions,
+          this.options
+        );
       }
     },
 
