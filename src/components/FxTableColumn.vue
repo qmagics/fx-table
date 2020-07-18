@@ -5,7 +5,7 @@
     :type="column.type"
     :sortable="column.sortable?'custom':false"
     :resizable="column.resizable"
-    :show-overflow-tooltip="true"
+    :show-overflow-tooltip="(column.showOverflowTooltip===false)?false:true"
     :align="column.align"
     :header-align="column.headerAlign"
     :width="column.width"

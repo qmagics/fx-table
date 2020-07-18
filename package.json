@@ -1,6 +1,6 @@
 {
   "name": "fx-table",
-  "version": "1.3.7",
+  "version": "1.3.9",
   "description": "",
   "main": "./lib/fx-table.min.js",
   "scripts": {
@@ -40,6 +40,7 @@
     "axios": "^0.19.2",
     "element-resize-detector": "^1.2.1",
     "element-ui": "^2.13.1",
+    "md5": "^2.2.1",
     "merge": "^1.2.1",
     "vue": "^2.6.11"
   },

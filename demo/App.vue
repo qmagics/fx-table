@@ -400,14 +400,14 @@ export default {
               name: "MAY",
               age: 17,
               foodId: "cake",
-              foodName: "蛋糕"
+              foodName: "是的风格和大风还能的工行发"
             },
             {
               id: "c" + i,
               name: "LILEI",
               age: 23,
               foodId: "noodles",
-              foodName: "面条"
+              foodName: "杀人放火燃放工会内容符合"
             },
             {
               id: "d" + i,

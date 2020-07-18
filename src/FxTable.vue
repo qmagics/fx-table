@@ -236,7 +236,13 @@ export default {
       asideTopProps,
       fullScreen,
       presetRowStates
-    } = merge.recursive(true, {}, DEFAULT_OPTIONS, this.options);
+    } = merge.recursive(
+      true,
+      {},
+      DEFAULT_OPTIONS,
+      Vue.__FxTable_defaultOptions,
+      this.options
+    );
 
     const tableData = this.decorateData(this.data, {
       ...Vue.__FxTable_presetRowStates,
