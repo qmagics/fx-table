@@ -1,7 +1,5 @@
 <template>
   <div :class="classes">
-    <!-- <el-button @click="dialog.visible=true">打开组件列表</el-button> -->
-
     <FxTable
       ref="table"
       :data.sync="data"
@@ -23,7 +21,11 @@
         <el-button @click="addRow">AddRow</el-button>
       </template>
 
-      <template #asideRight></template>
+      <template #query></template>
+
+      <template #customActions>
+        <el-button>A</el-button>
+      </template>
 
       <template #superQuery>
         <el-form-item label="字段A" prop="type">
@@ -88,7 +90,7 @@ Vue.directive("dialogDrag", {
     dragDom.style.cssText += ";top:0px;";
 
     // 获取原有属性 ie dom元素.currentStyle 火狐谷歌 window.getComputedStyle(dom元素, null);
-    const sty = (function() {
+    const sty = (function () {
       if (window.document.currentStyle) {
         return (dom, attr) => dom.currentStyle[attr];
       } else {
@@ -96,7 +98,7 @@ Vue.directive("dialogDrag", {
       }
     })();
 
-    dialogHeaderEl.onmousedown = e => {
+    dialogHeaderEl.onmousedown = (e) => {
       // 鼠标按下，计算当前元素距离可视区的距离
       const disX = e.clientX - dialogHeaderEl.offsetLeft;
       const disY = e.clientY - dialogHeaderEl.offsetTop;
@@ -126,7 +128,7 @@ Vue.directive("dialogDrag", {
         styT = +styT.replace(/\px/g, "");
       }
 
-      document.onmousemove = function(e) {
+      document.onmousemove = function (e) {
         // 通过事件委托，计算移动的距离
         let left = e.clientX - disX;
         let top = e.clientY - disY;
@@ -148,17 +150,17 @@ Vue.directive("dialogDrag", {
         dragDom.style.cssText += `;left:${left + styL}px;top:${top + styT}px;`;
       };
 
-      document.onmouseup = function(e) {
+      document.onmouseup = function (e) {
         document.onmousemove = null;
         document.onmouseup = null;
       };
     };
-  }
+  },
 });
 
 const save = (api, method, queryParams) => {
   return new Promise((y, n) => {
-    setTimeout(_ => {
+    setTimeout((_) => {
       y();
     }, 2000);
   });
@@ -168,7 +170,7 @@ const del = (api, method, queryParams) => {
   // const { data, status } = await axios[method.toLowerCase()](api, queryParams);
 
   return new Promise((y, n) => {
-    setTimeout(_ => {
+    setTimeout((_) => {
       y();
     }, 2000);
   });
@@ -177,7 +179,7 @@ const del = (api, method, queryParams) => {
 Vue.use(FxTable, {
   //注册行状态
   presetRowStates: {
-    pending: false
+    pending: false,
   },
 
   //注册action
@@ -188,7 +190,7 @@ Vue.use(FxTable, {
       category: "button",
       callback() {
         this.$alert("打开新增界面");
-      }
+      },
     },
     edit: {
       name: "编辑",
@@ -200,8 +202,8 @@ Vue.use(FxTable, {
           return;
         }
         this.$alert("打开编辑界面");
-      }
-    }
+      },
+    },
   },
 
   //注册renderer
@@ -266,25 +268,25 @@ Vue.use(FxTable, {
       selections = selections || [
         {
           label: "AAA",
-          value: "aaa"
+          value: "aaa",
         },
         {
           label: "BBB",
-          value: "bbb"
+          value: "bbb",
         },
         {
           label: "CCC",
-          value: "ccc"
-        }
+          value: "ccc",
+        },
       ];
 
-      const selectedItem = selections.find(i => i.value === value);
+      const selectedItem = selections.find((i) => i.value === value);
 
       return (
         <div>
           {isCurrent ? (
             <el-select v-model={row[column.prop]} disabled={row.$state.pending}>
-              {selections.map(o => (
+              {selections.map((o) => (
                 <el-option label={o.label} value={o.value}></el-option>
               ))}
             </el-select>
@@ -342,18 +344,18 @@ Vue.use(FxTable, {
           </el-button>
         </div>
       );
-    }
+    },
   },
 
   defaultOptions: {
-    toolbar: false
-  }
+    // toolbar: false,
+  },
 });
 
 export default {
   components: {
     FxButton,
-    FxTableColumn
+    FxTableColumn,
   },
 
   data() {
@@ -364,15 +366,15 @@ export default {
 
       dialog: {
         visible: false,
-        fullscreen: false
+        fullscreen: false,
       },
 
       classes: [
-        "box"
+        "box",
         // "container"
       ],
 
-      data: (function() {
+      data: (function () {
         let arr = [];
         for (let i = 0; i < 1; i++) {
           arr = arr.concat([
@@ -388,45 +390,45 @@ export default {
                   name: "MAY_1",
                   age: 317,
                   foodId: "cake",
-                  foodName: "蛋糕"
+                  foodName: "蛋糕",
                 },
                 {
                   id: "b" + i + "b",
                   name: "MAY_2",
                   age: 59,
                   foodId: "cake",
-                  foodName: "蛋糕"
-                }
-              ]
+                  foodName: "蛋糕",
+                },
+              ],
             },
             {
               id: "b" + i,
               name: "MAY",
               age: 17,
               foodId: "cake",
-              foodName: "是的风格和大风还能的工行发"
+              foodName: "是的风格和大风还能的工行发",
             },
             {
               id: "c" + i,
               name: "LILEI",
               age: 23,
               foodId: "noodles",
-              foodName: "杀人放火燃放工会内容符合"
+              foodName: "杀人放火燃放工会内容符合",
             },
             {
               id: "d" + i,
               name: "TEA",
               age: 21,
               foodId: "tea",
-              foodName: ""
-            }
+              foodName: "",
+            },
           ]);
         }
         return arr;
       })(),
 
       query: {
-        key: ""
+        key: "",
       },
 
       data2: [],
@@ -435,7 +437,11 @@ export default {
       options: {
         presetRowStates: {
           saving: false,
-          deleting: false
+          deleting: false,
+        },
+
+        toolbarProps: {
+          // layout: "query,searchBtn -> superQuery,fullScreen",
         },
 
         api: "/api/UserComponent?optionType=list",
@@ -445,6 +451,14 @@ export default {
         // size: "small",
 
         // showIndex:false,
+
+        // toolbar: true,
+
+        // toolbarProps: {
+        //   height:'100px'
+        // },
+
+        height: "100%",
 
         highlightCurrentRow: false,
 
@@ -467,7 +481,7 @@ export default {
 
         // showSummary: true,
 
-        singleSelect: true,
+        // singleSelect: true,
 
         // showIndex: true,
 
@@ -491,7 +505,7 @@ export default {
 
         // border: true,
 
-        tree: true,
+        // tree: true,
 
         // resHandler(res) {
         //   res.data.rows.forEach(i => {
@@ -511,11 +525,11 @@ export default {
         //   classes: "demo-header"
         // },
 
-        aside: true,
-        asideProps: {
-          show: false,
-          showToggle: true
-        },
+        // aside: true,
+        // asideProps: {
+        //   show: false,
+        //   showToggle: true
+        // },
 
         // asideRight: true,
         // asideRightProps: {
@@ -541,9 +555,9 @@ export default {
           name: "操作",
           icon: "el-icon-apple",
           category: "dropdown",
-          children: [new Action("add"), new Action("edit")]
-        })
-      ]
+          children: [new Action("add"), new Action("edit")],
+        }),
+      ],
     };
   },
 
@@ -555,37 +569,37 @@ export default {
           label: "NAME",
           sortable: true,
           width: 200,
-          render: "InputRenderer"
+          // render: "InputRenderer"
         },
         {
           prop: "age",
           label: "AGE",
           width: 200,
           sortable: true,
-          render: "InputNumberRenderer"
+          // render: "InputNumberRenderer"
         },
         {
           prop: "foodId",
           label: "食物",
           width: 200,
-          component: () => import("./cell-components/CellSelect"),
+          // component: () => import("./cell-components/CellSelect"),
           componentProps: {
             selections: [
               {
                 label: "牛奶",
-                value: "milk"
+                value: "milk",
               },
               {
                 label: "蛋糕",
-                value: "cake"
+                value: "cake",
               },
               {
                 label: "冰淇凌",
-                value: "icecream"
-              }
+                value: "icecream",
+              },
             ],
-            labelProp: "foodName"
-          }
+            labelProp: "foodName",
+          },
 
           // render: "SelectRenderer",
           // renderProps: {
@@ -609,15 +623,15 @@ export default {
         {
           prop: "id",
           label: "操作",
-          render: "HandlerRenderer",
+          // render: "HandlerRenderer",
           width: 500,
           renderProps: {
             api: "/api/save",
-            method: "put"
-          }
-        }
+            method: "put",
+          },
+        },
       ];
-    }
+    },
   },
 
   // computed:{
@@ -639,7 +653,7 @@ export default {
     addDlg() {
       this.dlgs.push({
         visible: true,
-        component: import("./cell-components/CellSelect")
+        component: import("./cell-components/CellSelect"),
       });
     },
     getSelected() {
@@ -667,14 +681,14 @@ export default {
               name: "CCC",
               age: 10,
               foodId: "milk",
-              foodName: "牛奶"
-            }
-          ]
+              foodName: "牛奶",
+            },
+          ],
         },
         1
       );
-    }
-  }
+    },
+  },
 };
 var count = 1;
 </script>

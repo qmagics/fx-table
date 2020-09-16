@@ -75,11 +75,6 @@ export const DEFAULT_OPTIONS = {
         }
     },
 
-    //列配置
-    columnsProps: {
-        showToggle: true,
-    },
-
     //ajax结果处理函数
     resHandler(res) {
         return res.data;
@@ -88,16 +83,43 @@ export const DEFAULT_OPTIONS = {
     //是否全屏
     fullScreen: false,
 
-    //全屏属性
-    fullScreenProps: {
-        showToggle: false
-    },
-
     //是否显示合计
     showSummary: false,
 
     //合计方法
     summaryMethod: null,
+
+    //是否有工具栏
+    toolbar: true,
+    //toolbar属性
+    toolbarProps: {
+        layout: 'query,searchBtn -> superQuery,actions,customActions,columnToggle,fullScreen',
+        height: 50
+    },
+
+    //是否有分页
+    pagination: true,
+    //分页属性
+    paginationProps: {
+        height: 50
+    },
+
+    //是否有尾部
+    footer: false,
+    //footer属性
+    footerProps: {
+        height: 50,
+        background: '#f3f3f3'
+    },
+
+    //关键词查询控件属性
+    keywordProps: {
+        label: '',
+        prop: 'key',
+        placeholder: '请输入关键词'
+    },
+
+    //#region 扩展功能
 
     //是否有头部
     header: false,
@@ -152,35 +174,5 @@ export const DEFAULT_OPTIONS = {
         showToggle: false,
     },
 
-    //是否有工具栏
-    toolbar: true,
-    //toolbar属性
-    toolbarProps: {
-        height: 50,
-        position: 'left'
-    },
-
-    //是否有分页
-    pagination: true,
-    //分页属性
-    paginationProps: {
-        height: 50
-    },
-
-    //是否有尾部（包括分页组件）
-    footer: false,
-    //footer属性
-    footerProps: {
-        height: 50,
-        background: '#f3f3f3'
-    },
-
-    //是否拥有关键词查询控件，当$slots.query不为空时生效
-    keyword: true,
-    //关键词查询控件属性
-    keywordProps: {
-        label: '',
-        prop: 'key',
-        placeholder: '请输入关键词'
-    }
+    //#endregion
 }

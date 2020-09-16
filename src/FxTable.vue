@@ -6,16 +6,11 @@
       v-if="cOptions.header"
       :style="headerStyle"
     >
-      <slot name="header">
-        <!-- <p>
-          showAside:{{showAside}}
-          &nbsp;&nbsp;
-          fullScreen:{{fullScreen}}
-        </p>-->
-      </slot>
+      <slot name="header"></slot>
     </div>
 
     <div class="fx-table--body" :style="bodyStyle">
+      <!-- start 扩展的侧边栏部分 -->
       <FxAside
         v-if="cOptions.aside"
         :opened.sync="showAside"
@@ -24,7 +19,6 @@
         position="left"
       >
         <slot name="aside"></slot>
-        <!-- <pre>currentRow:{{currentRow}}</pre> -->
       </FxAside>
 
       <FxAside
@@ -56,55 +50,12 @@
       >
         <slot name="asideBottom"></slot>
       </FxAside>
+      <!-- end 扩展的侧边栏部分 -->
 
       <div class="fx-table--main" :style="mainStyle">
         <div class="fx-table--toolbar" v-if="cOptions.toolbar" :style="toolbarStyle">
           <slot name="toolbar">
-            <div class="toolbar-start">
-              <FxSearchbar v-model="searchModel">
-                <slot name="query">
-                  <el-form-item
-                    v-if="cOptions.keyword"
-                    :prop="cOptions.keywordProps.prop"
-                    :label="cOptions.keywordProps.label"
-                  >
-                    <el-input
-                      v-model="searchModel[cOptions.keywordProps.prop]"
-                      clearable
-                      :placeholder="cOptions.keywordProps.placeholder"
-                      @keyup.native.enter="onInputChangedByUser"
-                    ></el-input>
-                  </el-form-item>
-                </slot>
-              </FxSearchbar>
-            </div>
-
-            <div
-              class="toolbar-end"
-              v-if="$slots.action || $slots.query || $slots.superQuery || (cActions && cActions.length)"
-            >
-              <FxButton type="text" v-if="$slots.superQuery" @click="superSearch=true">
-                高级查询
-                <i class="el-icon-arrow-down"></i>
-              </FxButton>
-              <slot name="action"></slot>
-
-              <ActionRenderer
-                v-for="action in cActions"
-                :key="action.code"
-                :action="action"
-                :handler="runAction"
-              ></ActionRenderer>
-
-              <ColumnToggle v-if="cOptions.columnsProps.showToggle" :columns.sync="vColumns" />
-
-              <FxButton
-                v-if="cOptions.fullScreenProps.showToggle"
-                type="text"
-                @click="fullScreen=!fullScreen"
-                :icon="fullScreen?'el-icon-copy-document':'el-icon-full-screen'"
-              ></FxButton>
-            </div>
+            <DefaultToolbar v-bind="cOptions.toolbarProps" />
           </slot>
         </div>
 
@@ -198,12 +149,13 @@ import {
   genColumns,
   decorateData,
   decorateRow,
-  isNotEmpty
+  isNotEmpty,
 } from "./utils";
 import axios from "axios";
 import merge from "merge";
 import ActionRenderer from "./components/ActionRenderer.vue";
 import ColumnToggle from "./components/ColumnToggle.vue";
+import DefaultToolbar from "./components/DefaultToolbar";
 
 export default {
   name: "FxTable",
@@ -215,7 +167,8 @@ export default {
     FxButton,
     FxAside,
     ActionRenderer,
-    ColumnToggle
+    ColumnToggle,
+    DefaultToolbar,
   },
 
   data() {
@@ -235,7 +188,7 @@ export default {
       asideTop,
       asideTopProps,
       fullScreen,
-      presetRowStates
+      presetRowStates,
     } = merge.recursive(
       true,
       {},
@@ -246,7 +199,7 @@ export default {
 
     const tableData = this.decorateData(this.data, {
       ...Vue.__FxTable_presetRowStates,
-      ...presetRowStates
+      ...presetRowStates,
     });
     // const tableData = this.data;
 
@@ -273,38 +226,38 @@ export default {
 
       pagerModel: {
         pageIndex: pageNumber,
-        pageSize: pageSize
+        pageSize: pageSize,
       },
 
       searchModel: this.query,
 
       sortModel: {
         order: order,
-        sort: sort
+        sort: sort,
       },
 
       defaultSort: {
         prop: sort,
         order:
-          order === "asc" ? "ascending" : order === "desc" ? "descending" : ""
+          order === "asc" ? "ascending" : order === "desc" ? "descending" : "",
       },
 
       pagerConfig: {
         layout: pagerLayout,
         total: 0,
         pageSize: pageSize,
-        sizes: getCalcPagerSizes(pageSize, pagerSizes)
+        sizes: getCalcPagerSizes(pageSize, pagerSizes),
       },
 
       loading: false,
 
       selected: {
         rows: [],
-        row: null
+        row: null,
       },
 
       //当前行
-      currentRow: null
+      currentRow: null,
     };
   },
 
@@ -315,12 +268,28 @@ export default {
 
     data: {
       type: Array,
-      default: () => []
+      default: () => [],
     },
 
     query: {},
 
-    actions: Array
+    actions: Array,
+  },
+
+  provide() {
+    return {
+      $fxTable: this,
+
+      openSuperQuery: this.openSuperQuery,
+
+      refreshTable: this.refreshTable,
+
+      cOptions: this.cOptions,
+
+      searchModel: this.searchModel,
+
+      vColumns: this.vColumns,
+    };
   },
 
   watch: {
@@ -328,41 +297,41 @@ export default {
       handler(val) {
         this.tableData = val;
       },
-      deep: true
+      deep: true,
     },
 
     tableData: {
       handler(val) {
         this.$emit("update:data", val);
       },
-      deep: true
+      deep: true,
     },
 
     columns: {
       handler(val) {
         this.vColumns = genColumns(val);
       },
-      deep: true
+      deep: true,
     },
 
     query: {
       handler(val) {
         this.searchModel = val;
       },
-      deep: true
+      deep: true,
     },
 
     searchModel: {
       handler(val) {
         this.$emit("update:query", val);
       },
-      deep: true
+      deep: true,
     },
 
     //监听api变更
     "cOptions.api"(newApi) {
       this.refreshTable();
-    }
+    },
   },
 
   computed: {
@@ -375,13 +344,13 @@ export default {
     },
 
     visibleColumns() {
-      return this.vColumns.filter(c => c.visible);
+      return this.vColumns.filter((c) => c.visible);
     },
 
     cPresetRowStates() {
       return {
         ...Vue.__FxTable_presetRowStates,
-        ...this.cOptions.presetRowStates
+        ...this.cOptions.presetRowStates,
       };
     },
 
@@ -407,7 +376,7 @@ export default {
             this.selected.rows = data;
           }
         }
-      }
+      },
     },
 
     selectedRow: {
@@ -424,7 +393,7 @@ export default {
         if (selectable || singleSelect) {
           this.selected.row = data;
         }
-      }
+      },
     },
 
     highlightCurrentRow() {
@@ -444,7 +413,7 @@ export default {
           Vue.__FxTable_defaultOptions,
           this.options
         );
-      }
+      },
     },
 
     classes() {
@@ -474,7 +443,7 @@ export default {
       return {
         height: getCssNumber(height),
         width: getCssNumber(width),
-        background
+        background,
       };
     },
 
@@ -484,7 +453,7 @@ export default {
 
       return {
         height: getCssNumber(height),
-        background
+        background,
       };
     },
 
@@ -495,7 +464,7 @@ export default {
         height: `calc(100% 
         ${header ? "- " + getCssNumber(headerProps.height) : ""} 
         ${footer ? "- " + getCssNumber(footerProps.height) : ""} 
-        )`
+        )`,
       };
     },
 
@@ -505,7 +474,7 @@ export default {
         width: this.showAside ? getCssNumber(width) : 0,
         background: background,
         top: getCssNumber(top),
-        bottom: getCssNumber(bottom)
+        bottom: getCssNumber(bottom),
       };
     },
 
@@ -515,7 +484,7 @@ export default {
         width: this.showAsideRight ? getCssNumber(width) : 0,
         background: background,
         top: getCssNumber(top),
-        bottom: getCssNumber(bottom)
+        bottom: getCssNumber(bottom),
       };
     },
 
@@ -530,7 +499,7 @@ export default {
           : 0,
         right: this.getAsideShowByPosition("right")
           ? getCssNumber(this.cOptions.asideRightProps.width)
-          : 0
+          : 0,
       };
     },
 
@@ -545,7 +514,7 @@ export default {
           : 0,
         right: this.getAsideShowByPosition("right")
           ? getCssNumber(this.cOptions.asideRightProps.width)
-          : 0
+          : 0,
       };
     },
 
@@ -558,7 +527,7 @@ export default {
         asideBottom,
         asideBottomProps,
         asideTop,
-        asideTopProps
+        asideTopProps,
       } = this.cOptions;
       return {
         left: aside && this.showAside ? getCssNumber(asideProps.width) : 0,
@@ -571,7 +540,9 @@ export default {
             ? getCssNumber(asideBottomProps.height)
             : 0,
         top:
-          asideTop && this.showAsideTop ? getCssNumber(asideTopProps.height) : 0
+          asideTop && this.showAsideTop
+            ? getCssNumber(asideTopProps.height)
+            : 0,
       };
     },
 
@@ -580,7 +551,7 @@ export default {
       const { height } = toolbarProps;
 
       return {
-        height: getCssNumber(height)
+        height: getCssNumber(height),
       };
     },
 
@@ -589,14 +560,14 @@ export default {
         toolbar,
         toolbarProps,
         pagination,
-        paginationProps
+        paginationProps,
       } = this.cOptions;
 
       return {
         height: `calc(100% 
         ${toolbar ? "- " + getCssNumber(toolbarProps.height) : ""} 
         ${pagination ? "- " + getCssNumber(paginationProps.height) : ""}
-        )`
+        )`,
       };
     },
 
@@ -605,7 +576,7 @@ export default {
       const { height } = paginationProps;
 
       return {
-        height: getCssNumber(height)
+        height: getCssNumber(height),
       };
     },
 
@@ -615,7 +586,7 @@ export default {
 
       return {
         height: getCssNumber(height),
-        background
+        background,
       };
     },
 
@@ -623,12 +594,12 @@ export default {
       const model = {
         ...this.pagerModel,
         ...this.sortModel,
-        ...this.searchModel
+        ...this.searchModel,
       };
 
       return this.method.toLowerCase() === "get"
         ? {
-            params: model
+            params: model,
           }
         : model;
     },
@@ -643,10 +614,15 @@ export default {
 
     rowKey() {
       return this.cOptions.rowKey;
-    }
+    },
   },
 
   methods: {
+    //切换全屏显示
+    toggleFullScreen() {
+      this.fullScreen = !this.fullScreen;
+    },
+
     //根据位置获取边栏是否存在且处于打开状态
     getAsideShowByPosition(position) {
       position = firstToUpper(position);
@@ -663,6 +639,11 @@ export default {
     onSuperSearchConfirm() {
       this.superSearch = false;
       this.refreshTable();
+    },
+
+    //打开高级搜索面板
+    openSuperQuery() {
+      this.superSearch = true;
     },
 
     //搜索按钮点击
@@ -762,7 +743,7 @@ export default {
       if (resetPageNumber) {
         this.pagerModel.pageIndex = this.cOptions.pageNumber;
         // this.pagerModel.pageSize = this.cOptions.pageSize;
-        this.$nextTick(_ => {
+        this.$nextTick((_) => {
           this.getData();
         });
       } else {
@@ -819,7 +800,7 @@ export default {
       let positionArr = ["", "Right", "Top", "Bottom"];
       // 0 arguments
       if (arguments.length === 0) {
-        positionArr.forEach(p => {
+        positionArr.forEach((p) => {
           this["showAside" + p] = !this["showAside" + p];
         });
       }
@@ -833,7 +814,7 @@ export default {
         if (typeof arg1 === "string") {
           this["showAside" + arg1] = !this["showAside" + arg1];
         } else if (typeof arg1 === "boolean") {
-          positionArr.forEach(p => {
+          positionArr.forEach((p) => {
             this["showAside" + p] = arg1;
           });
         }
@@ -895,7 +876,7 @@ export default {
      * 通过唯一id获取行数据
      */
     getRowByKey(id) {
-      return this.tableData.find(i => i[this.rowKey] === id);
+      return this.tableData.find((i) => i[this.rowKey] === id);
     },
 
     //fx-table-column的作用域插槽渲染函数
@@ -913,12 +894,12 @@ export default {
       return {
         ...row,
         $state: {
-          ...presetRowStates
+          ...presetRowStates,
         },
         children:
           row.children && row.children.length
-            ? row.children.map(i => this.decorateRow(i))
-            : []
+            ? row.children.map((i) => this.decorateRow(i))
+            : [],
       };
     },
 
@@ -927,21 +908,21 @@ export default {
      * @param {array} rows 源数据
      */
     decorateData(rows, presetRowStates) {
-      return rows.map(row => {
+      return rows.map((row) => {
         return this.decorateRow(row, presetRowStates);
       });
     },
 
     test(str) {
       alert(str);
-    }
+    },
   },
 
   async mounted() {
     if (this.cOptions.api) {
       await this.getData();
     }
-  }
+  },
 };
 </script>
 

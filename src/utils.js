@@ -1,3 +1,5 @@
+import Vue from 'vue';
+
 /**
  * 获取计算之后的分页列表
  * @param {number} size 需要显示的分页
@@ -82,8 +84,6 @@ export function decorateData(rows) {
         return decorateRow(row);
     });
 }
-
-import Vue from 'vue';
 
 /**
  * 装饰数据行
