@@ -46,7 +46,20 @@
       transition: all 0.3s ease-in-out;
       padding: 0 10px;
       .fx-table--toolbar {
-        
+      }
+
+      .fx-table--searchbar {
+        border-radius: 4px;
+        margin-bottom: 10px;
+        overflow: hidden;
+        // height:100px;
+      }
+
+      .el-drawer__wrapper {
+        position: absolute;
+        *:focus {
+          outline: none;
+        }
       }
 
       .fx-table--fixedbar {

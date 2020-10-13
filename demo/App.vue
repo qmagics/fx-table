@@ -11,10 +11,18 @@
       @row-dblclick="rowDblClick"
     >
       <template #aside>
-        <el-button @click="options.api='/api/CustomParts?optionType=list'">自定义组件</el-button>
-        <el-button @click="options.api='/api/UserComponent?optionType=list'">用户组件</el-button>
+        <el-button @click="options.api = '/api/CustomParts?optionType=list'"
+          >自定义组件</el-button
+        >
+        <el-button @click="options.api = '/api/UserComponent?optionType=list'"
+          >用户组件</el-button
+        >
 
-        <div v-for="i in data" :key="i.id" style="margin-bottom:5px;padding:0 10px">
+        <div
+          v-for="i in data"
+          :key="i.id"
+          style="margin-bottom: 5px; padding: 0 10px"
+        >
           <el-input v-model="i.name"></el-input>
         </div>
 
@@ -24,7 +32,7 @@
       <template #query></template>
 
       <template #customActions>
-        <el-button>A</el-button>
+        <el-button @click="changeApi">changeApi</el-button>
       </template>
 
       <template #superQuery>
@@ -53,6 +61,42 @@
           </el-select>
         </el-form-item>
         <el-form-item label="字段A">
+          <el-select v-model="query.type" @change="$refs.table.refreshTable()">
+            <el-option value="a" label="A1"></el-option>
+            <el-option value="b" label="B"></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="字段A">
+          <el-select v-model="query.type" @change="$refs.table.refreshTable()">
+            <el-option value="a" label="A1"></el-option>
+            <el-option value="b" label="B"></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="字段A">
+          <el-select v-model="query.type" @change="$refs.table.refreshTable()">
+            <el-option value="a" label="A1"></el-option>
+            <el-option value="b" label="B"></el-option>
+          </el-select>
+        </el-form-item>
+         <el-form-item label="字段A">
+          <el-select v-model="query.type" @change="$refs.table.refreshTable()">
+            <el-option value="a" label="A1"></el-option>
+            <el-option value="b" label="B"></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="字段A">
+          <el-select v-model="query.type" @change="$refs.table.refreshTable()">
+            <el-option value="a" label="A1"></el-option>
+            <el-option value="b" label="B"></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="字段A">
+          <el-select v-model="query.type" @change="$refs.table.refreshTable()">
+            <el-option value="a" label="A1"></el-option>
+            <el-option value="b" label="B"></el-option>
+          </el-select>
+        </el-form-item>
+         <el-form-item label="字段A">
           <el-select v-model="query.type" @change="$refs.table.refreshTable()">
             <el-option value="a" label="A1"></el-option>
             <el-option value="b" label="B"></el-option>
@@ -374,58 +418,7 @@ export default {
         // "container"
       ],
 
-      data: (function () {
-        let arr = [];
-        for (let i = 0; i < 1; i++) {
-          arr = arr.concat([
-            {
-              id: "a" + i,
-              name: "JAMES",
-              age: 35,
-              foodId: "milk",
-              foodName: "牛奶",
-              children: [
-                {
-                  id: "b" + i + "a",
-                  name: "MAY_1",
-                  age: 317,
-                  foodId: "cake",
-                  foodName: "蛋糕",
-                },
-                {
-                  id: "b" + i + "b",
-                  name: "MAY_2",
-                  age: 59,
-                  foodId: "cake",
-                  foodName: "蛋糕",
-                },
-              ],
-            },
-            {
-              id: "b" + i,
-              name: "MAY",
-              age: 17,
-              foodId: "cake",
-              foodName: "是的风格和大风还能的工行发",
-            },
-            {
-              id: "c" + i,
-              name: "LILEI",
-              age: 23,
-              foodId: "noodles",
-              foodName: "杀人放火燃放工会内容符合",
-            },
-            {
-              id: "d" + i,
-              name: "TEA",
-              age: 21,
-              foodId: "tea",
-              foodName: "",
-            },
-          ]);
-        }
-        return arr;
-      })(),
+      data: [],
 
       query: {
         key: "",
@@ -444,7 +437,8 @@ export default {
           // layout: "query,searchBtn -> superQuery,fullScreen",
         },
 
-        api: "/api/UserComponent?optionType=list",
+        api:
+          "/api/Examinee?optionType=list&AdvanceEntranceExamId=734b9360-96f8-4f12-bea8-32c9747b271b",
 
         // background: "#fff",
 
@@ -558,80 +552,40 @@ export default {
           children: [new Action("add"), new Action("edit")],
         }),
       ],
+
+      columns: [
+        {
+          prop: "xm",
+          label: "姓名",
+          width: 100,
+        },
+        {
+          prop: "PicUrl",
+          label: "照片",
+          width: 100,
+          align: "center",
+          render: (h, context) => (
+            <el-image
+              style="width:70px;height:70px;"
+              src={context.row.PicUrl}
+            ></el-image>
+          ),
+        },
+        {
+          prop: "PhoneNumber",
+          label: "手机号码",
+          width: 120,
+        },
+        {
+          prop: "byxxmc",
+          label: "毕业学校",
+        },
+        {
+          prop: "byzymc",
+          label: "毕业专业",
+        },
+      ],
     };
-  },
-
-  computed: {
-    columns() {
-      return [
-        {
-          prop: "name",
-          label: "NAME",
-          sortable: true,
-          width: 200,
-          // render: "InputRenderer"
-        },
-        {
-          prop: "age",
-          label: "AGE",
-          width: 200,
-          sortable: true,
-          // render: "InputNumberRenderer"
-        },
-        {
-          prop: "foodId",
-          label: "食物",
-          width: 200,
-          // component: () => import("./cell-components/CellSelect"),
-          componentProps: {
-            selections: [
-              {
-                label: "牛奶",
-                value: "milk",
-              },
-              {
-                label: "蛋糕",
-                value: "cake",
-              },
-              {
-                label: "冰淇凌",
-                value: "icecream",
-              },
-            ],
-            labelProp: "foodName",
-          },
-
-          // render: "SelectRenderer",
-          // renderProps: {
-          //   selections: [
-          //     {
-          //       label: "牛奶",
-          //       value: "milk"
-          //     },
-          //     {
-          //       label: "蛋糕",
-          //       value: "cake"
-          //     },
-          //     {
-          //       label: "冰淇凌",
-          //       value: "icecream"
-          //     }
-          //   ],
-          //   labelProp: "foodName"
-          // }
-        },
-        {
-          prop: "id",
-          label: "操作",
-          // render: "HandlerRenderer",
-          width: 500,
-          renderProps: {
-            api: "/api/save",
-            method: "put",
-          },
-        },
-      ];
-    },
   },
 
   // computed:{
@@ -687,6 +641,11 @@ export default {
         },
         1
       );
+    },
+
+    changeApi() {
+      this.options.api =
+        "/api/Specialty?optionType=list&AdvanceEntranceExamId=734b9360-96f8-4f12-bea8-32c9747b271b";
     },
   },
 };

@@ -33,13 +33,15 @@ const renderMap = {
     );
   },
 
-  //高级查询按钮
-  superQuery(h) {
-    const { openSuperQuery } = this.$fxTable;
+  //搜索栏显示切换按钮
+  searchbarToggle(h) {
+    const { toggleSearchbarVisible } = this.$fxTable;
     return (
-      <el-button class="toolbar-item" type="text" vOn:click={openSuperQuery}>
-        高级查询
-        <i class="el-icon-arrow-down"></i>
+      <el-button
+        class="toolbar-item"
+        vOn:click={toggleSearchbarVisible}
+      >
+        搜索栏
       </el-button>
     );
   },

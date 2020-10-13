@@ -93,8 +93,22 @@ export const DEFAULT_OPTIONS = {
     toolbar: true,
     //toolbar属性
     toolbarProps: {
-        layout: 'query,searchBtn -> superQuery,actions,customActions,columnToggle,fullScreen',
+        layout: 'query,searchBtn -> searchbarToggle,actions,customActions,columnToggle,fullScreen',
         height: 50
+    },
+
+    //是否有抽屉
+    drawer: false,
+    drawerProps: {
+        visible: false,
+    },
+
+    //是否有搜索栏
+    searchbar: false,
+    searchbarProps: {
+        visible: false,
+        height: 'auto',
+        background: "#f7f7f7",
     },
 
     //是否有分页

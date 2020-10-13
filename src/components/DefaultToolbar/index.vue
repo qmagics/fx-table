@@ -1,13 +1,13 @@
 <template>
-  <div class="fx-table--default-toolbar">
-    <div class="toolbar-start">
-      <template v-for="(i,index) in toolbarLayout.start.items">
+  <div class="fx-toolbar">
+    <div class="fx-toolbar--start">
+      <template v-for="(i, index) in toolbarLayout.start.items">
         <ToolbarItem v-if="i" :key="index" :type="i" />
       </template>
     </div>
 
-    <div class="toolbar-end">
-      <template v-for="(i,index) in toolbarLayout.end.items">
+    <div class="fx-toolbar--end">
+      <template v-for="(i, index) in toolbarLayout.end.items">
         <ToolbarItem v-if="i" :key="index" :type="i" />
       </template>
     </div>
@@ -50,62 +50,60 @@ export default {
 </script>
 
 <style lang="scss">
-.fx-table {
-  .fx-table--default-toolbar {
-    background: #fff;
-    position: relative;
+.fx-toolbar {
+  background: #fff;
+  position: relative;
+  display: flex;
+  height: 100%;
+
+  .fx-toolbar--start {
+    flex: 1;
     display: flex;
-    height: 100%;
+    align-items: center;
+  }
 
-    .toolbar-start {
-      flex: 1;
-      display: flex;
-      align-items: center;
-    }
+  .fx-toolbar--end {
+    display: flex;
+    width: auto;
+    position: relative;
+    align-items: center;
+    padding: 0 0 0 15px;
 
-    .toolbar-end {
-      display: flex;
-      width: auto;
-      position: relative;
-      align-items: center;
-      padding: 0 0 0 15px;
+    // &:before {
+    //   content: "";
+    //   display: block;
+    //   height: 60%;
+    //   width: 1px;
+    //   position: absolute;
+    //   left: 1px;
+    //   top: 50%;
+    //   // background: #eee;
+    //   background-image: linear-gradient(
+    //     to bottom,
+    //     rgba(0, 0, 0, 0) 0%,
+    //     rgba(0, 0, 0, 0.1) 50%,
+    //     rgba(0, 0, 0, 0) 100%
+    //   );
+    //   transform: translateY(-50%);
+    // }
+  }
 
-      // &:before {
-      //   content: "";
-      //   display: block;
-      //   height: 60%;
-      //   width: 1px;
-      //   position: absolute;
-      //   left: 1px;
-      //   top: 50%;
-      //   // background: #eee;
-      //   background-image: linear-gradient(
-      //     to bottom,
-      //     rgba(0, 0, 0, 0) 0%,
-      //     rgba(0, 0, 0, 0.1) 50%,
-      //     rgba(0, 0, 0, 0) 100%
-      //   );
-      //   transform: translateY(-50%);
-      // }
-    }
+  //工具栏项目
+  .toolbar-item {
+    display: inline-block;
+    margin-right: 10px;
+  }
 
-    //工具栏项目
-    .toolbar-item {
-      display: inline-block;
-      margin-right: 10px;
-    }
-
-    .toolbar-item-spliter {
-      height: 60%;
-      width: 1px;
-      left: 1px;
-      background-image: linear-gradient(
-        to bottom,
-        rgba(0, 0, 0, 0) 0%,
-        rgba(0, 0, 0, 0.1) 50%,
-        rgba(0, 0, 0, 0) 100%
-      );
-    }
+  .toolbar-item-spliter {
+    height: 60%;
+    width: 1px;
+    left: 1px;
+    background-image: linear-gradient(
+      to bottom,
+      rgba(0, 0, 0, 0) 0%,
+      rgba(0, 0, 0, 0.1) 50%,
+      rgba(0, 0, 0, 0) 100%
+    );
   }
 }
 </style>

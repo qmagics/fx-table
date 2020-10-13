@@ -1,5 +1,6 @@
 <template>
   <div class="fx-table" :class="classes" :style="style">
+    <!-- 头部 -->
     <div
       class="fx-table--header"
       :class="cOptions.headerProps.classes"
@@ -9,65 +10,99 @@
       <slot name="header"></slot>
     </div>
 
+    <!-- 中部 -->
     <div class="fx-table--body" :style="bodyStyle">
-      <!-- start 扩展的侧边栏部分 -->
-      <FxAside
-        v-if="cOptions.aside"
-        :opened.sync="showAside"
-        :style="asideStyle"
-        :showToggle="cOptions.asideProps.showToggle"
-        position="left"
-      >
-        <slot name="aside"></slot>
-      </FxAside>
+      <!-- 侧边栏 -->
+      <template>
+        <FxAside
+          v-if="cOptions.aside"
+          :opened.sync="showAside"
+          :style="asideStyle"
+          :showToggle="cOptions.asideProps.showToggle"
+          position="left"
+        >
+          <slot name="aside"></slot>
+        </FxAside>
 
-      <FxAside
-        v-if="cOptions.asideRight"
-        :opened.sync="showAsideRight"
-        :style="asideRightStyle"
-        :showToggle="cOptions.asideRightProps.showToggle"
-        position="right"
-      >
-        <slot name="asideRight"></slot>
-      </FxAside>
+        <FxAside
+          v-if="cOptions.asideRight"
+          :opened.sync="showAsideRight"
+          :style="asideRightStyle"
+          :showToggle="cOptions.asideRightProps.showToggle"
+          position="right"
+        >
+          <slot name="asideRight"></slot>
+        </FxAside>
 
-      <FxAside
-        v-if="cOptions.asideBottom"
-        :opened.sync="showAsideBottom"
-        :style="asideBottomStyle"
-        :showToggle="cOptions.asideBottomProps.showToggle"
-        position="bottom"
-      >
-        <slot name="asideBottom"></slot>
-      </FxAside>
+        <FxAside
+          v-if="cOptions.asideBottom"
+          :opened.sync="showAsideBottom"
+          :style="asideBottomStyle"
+          :showToggle="cOptions.asideBottomProps.showToggle"
+          position="bottom"
+        >
+          <slot name="asideBottom"></slot>
+        </FxAside>
 
-      <FxAside
-        v-if="cOptions.asideTop"
-        :opened.sync="showAsideTop"
-        :style="asideTopStyle"
-        :showToggle="cOptions.asideTopProps.showToggle"
-        position="top"
+        <FxAside
+          v-if="cOptions.asideTop"
+          :opened.sync="showAsideTop"
+          :style="asideTopStyle"
+          :showToggle="cOptions.asideTopProps.showToggle"
+          position="top"
+        >
+          <slot name="asideBottom"></slot>
+        </FxAside>
+      </template>
+
+      <!-- 抽屉 -->
+      <el-drawer
+        v-if="cOptions.drawer && $slots.drawer"
+        :title="drawer.title"
+        :visible.sync="drawer.visible"
+        :direction="drawer.direction"
+        :modal="false"
+        :size="drawer.size"
       >
-        <slot name="asideBottom"></slot>
-      </FxAside>
-      <!-- end 扩展的侧边栏部分 -->
+        <slot name="drawer" />
+      </el-drawer>
 
       <div class="fx-table--main" :style="mainStyle">
-        <div class="fx-table--toolbar" v-if="cOptions.toolbar" :style="toolbarStyle">
+        <!-- 工具栏 -->
+        <div
+          class="fx-table--toolbar"
+          v-if="cOptions.toolbar"
+          :style="toolbarStyle"
+        >
           <slot name="toolbar">
             <DefaultToolbar v-bind="cOptions.toolbarProps" />
           </slot>
         </div>
 
-        <transition name="el-zoom-in-top">
-          <div class="fx-table--fixedbar" v-show="superSearch">
-            <FxSearchbar v-model="searchModel" superMode @confirm="onSuperSearchConfirm">
-              <slot name="superQuery" />
-            </FxSearchbar>
-          </div>
-        </transition>
+        <!-- 搜索栏 -->
+        <div
+          class="fx-table--searchbar"
+          v-if="$slots.superQuery"
+          v-show="searchbarVisible"
+          :style="searchbarStyle"
+        >
+          <slot name="searchbar">
+            <DefaultSearchbar v-model="searchModel" @submit="onSearchbarSubmit">
+              <slot name="superQuery"></slot>
+            </DefaultSearchbar>
+          </slot>
 
-        <div class="fx-table--table" v-loading="loading" :style="tableStyle">
+          <!-- <FxSearchbar
+            v-model="searchModel"
+            superMode
+            @confirm="onSuperSearchConfirm"
+          >
+            <slot name="superQuery" />
+          </FxSearchbar> -->
+        </div>
+
+        <!-- 主体部分 -->
+        <div class="fx-table--table" v-loading="vLoading" :style="tableStyle">
           <el-table
             ref="table"
             :data="tableData"
@@ -75,7 +110,11 @@
             :size="cOptions.size"
             :border="cOptions.border"
             :row-key="cOptions.rowKey"
-            :tree-props="cOptions.tree?cOptions.treeProps:{children:'',hasChildren:''}"
+            :tree-props="
+              cOptions.tree
+                ? cOptions.treeProps
+                : { children: '', hasChildren: '' }
+            "
             :lazy="cOptions.treeProps.lazy"
             :load="cOptions.treeProps.load"
             :default-sort="defaultSort"
@@ -89,6 +128,7 @@
             @selection-change="onSelectionChange"
             @current-change="onCurrentChange"
           >
+            <!-- 索引列 -->
             <el-table-column
               width="50px"
               type="index"
@@ -97,19 +137,22 @@
               fixed
               v-if="cOptions.showIndex"
             ></el-table-column>
+
+            <!-- 选项框列 -->
             <el-table-column
               type="selection"
               align="center"
               width="50px"
               fixed
-              v-if="cOptions.selectable && cOptions.singleSelect==false"
+              v-if="cOptions.selectable && cOptions.singleSelect == false"
             ></el-table-column>
 
+            <!--用户提供的列-->
             <slot>
               <FxTableColumn
-                v-for="(c,index) in visibleColumns"
+                v-for="(c, index) in visibleColumns"
                 :column="c"
-                :key="(c.prop||'')+index"
+                :key="(c.prop || '') + index"
                 :render="slotsRender"
                 :currentRow="currentRow"
               ></FxTableColumn>
@@ -117,7 +160,12 @@
           </el-table>
         </div>
 
-        <div class="fx-table--pagination" v-if="cOptions.pagination" :style="paginationStyle">
+        <!-- 分页控件 -->
+        <div
+          class="fx-table--pagination"
+          v-if="cOptions.pagination"
+          :style="paginationStyle"
+        >
           <FxPager
             v-model="pagerModel"
             :config.sync="pagerConfig"
@@ -128,6 +176,7 @@
       </div>
     </div>
 
+    <!-- 尾部 -->
     <div class="fx-table--footer" v-if="cOptions.footer" :style="footerStyle">
       <slot name="footer"></slot>
     </div>
@@ -156,6 +205,7 @@ import merge from "merge";
 import ActionRenderer from "./components/ActionRenderer.vue";
 import ColumnToggle from "./components/ColumnToggle.vue";
 import DefaultToolbar from "./components/DefaultToolbar";
+import DefaultSearchbar from "./components/DefaultSearchbar";
 
 export default {
   name: "FxTable",
@@ -169,6 +219,7 @@ export default {
     ActionRenderer,
     ColumnToggle,
     DefaultToolbar,
+    DefaultSearchbar,
   },
 
   data() {
@@ -189,6 +240,7 @@ export default {
       asideTopProps,
       fullScreen,
       presetRowStates,
+      searchbarProps,
     } = merge.recursive(
       true,
       {},
@@ -216,9 +268,9 @@ export default {
 
       showAsideTop: asideTopProps.show,
 
-      searchbarMode: "normal",
+      // superSearch: false,
 
-      superSearch: false,
+      searchbarVisible: searchbarProps.visible,
 
       tableData: tableData,
 
@@ -249,7 +301,7 @@ export default {
         sizes: getCalcPagerSizes(pageSize, pagerSizes),
       },
 
-      loading: false,
+      vLoading: this.loading,
 
       selected: {
         rows: [],
@@ -271,6 +323,8 @@ export default {
       default: () => [],
     },
 
+    loading: Boolean,
+
     query: {},
 
     actions: Array,
@@ -280,7 +334,7 @@ export default {
     return {
       $fxTable: this,
 
-      openSuperQuery: this.openSuperQuery,
+      toggleSearchbarVisible: this.toggleSearchbarVisible,
 
       refreshTable: this.refreshTable,
 
@@ -331,6 +385,13 @@ export default {
     //监听api变更
     "cOptions.api"(newApi) {
       this.refreshTable();
+    },
+
+    loading(val) {
+      this.vLoading = val;
+    },
+    vLoading(val) {
+      this.$emit("update:loading", val);
     },
   },
 
@@ -555,6 +616,16 @@ export default {
       };
     },
 
+    searchbarStyle() {
+      const { searchbarProps } = this.cOptions;
+      const { height, background } = searchbarProps;
+
+      return {
+        height: getCssNumber(height),
+        background,
+      };
+    },
+
     tableStyle() {
       const {
         toolbar,
@@ -636,14 +707,15 @@ export default {
     },
 
     //用户点击高级搜索确认
-    onSuperSearchConfirm() {
-      this.superSearch = false;
+    onSearchbarSubmit() {
       this.refreshTable();
     },
 
     //打开高级搜索面板
-    openSuperQuery() {
-      this.superSearch = true;
+    toggleSearchbarVisible(bl = null) {
+      const val = bl !== null ? bl : !this.searchbarVisible;
+
+      this.searchbarVisible = !this.searchbarVisible;
     },
 
     //搜索按钮点击
@@ -709,7 +781,7 @@ export default {
     async getData() {
       if (!this.api) return;
 
-      this.loading = true;
+      this.vLoading = true;
 
       try {
         const { data, status } = await axios[this.method.toLowerCase()](
@@ -726,12 +798,12 @@ export default {
         } else {
           this.tableData = this.decorateData(res);
         }
-        this.loading = false;
+        this.vLoading = false;
       } catch (error) {
         if (process.env === "development") {
           console.warn(`[FxTable]组件getData方法错误：`, error);
         }
-        this.loading = false;
+        this.vLoading = false;
       }
     },
 
