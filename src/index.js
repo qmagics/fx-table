@@ -1,4 +1,4 @@
-import Vue from 'vue';
+// import Vue from 'vue';
 // import ElementUI from 'element-ui';
 // Vue.use(ElementUI);
 
@@ -12,7 +12,7 @@ import FxTable from './FxTable.vue';
 FxTable.install = (Vue, opt) => {
     Vue.component(FxTable.name, FxTable);
 
-    const { presetActions, defaultOptions, presetColumnRenderers, presetRowStates } = opt || {};
+    const { presetActions, defaultOptions, presetColumnRenderers, presetRowStates, axios } = opt || {};
 
     //覆盖表格默认的配置项，可以提供自定义的初始展现形式
     Vue.__FxTable_defaultOptions = defaultOptions;
@@ -25,6 +25,9 @@ FxTable.install = (Vue, opt) => {
 
     //注册全局默认行状态
     Vue.__FxTable_presetRowStates = presetRowStates;
+
+    //自定义axios实例
+    Vue.__FxTable_axios = axios;
 }
 
 export default FxTable;

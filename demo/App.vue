@@ -5,7 +5,6 @@
       :data.sync="data"
       :options="options"
       :columns="columns"
-      :actions="actions"
       :query.sync="query"
       @row-click="rowClick"
       @row-dblclick="rowDblClick"
@@ -17,7 +16,6 @@
         <el-button @click="options.api = '/api/UserComponent?optionType=list'"
           >用户组件</el-button
         >
-
         <div
           v-for="i in data"
           :key="i.id"
@@ -29,9 +27,11 @@
         <el-button @click="addRow">AddRow</el-button>
       </template>
 
-      <template #query></template>
+      <!-- <template #query>
+            <el-input></el-input>
+      </template> -->
 
-      <template #customActions>
+      <template #actions>
         <el-button @click="changeApi">changeApi</el-button>
       </template>
 
@@ -78,12 +78,6 @@
             <el-option value="b" label="B"></el-option>
           </el-select>
         </el-form-item>
-         <el-form-item label="字段A">
-          <el-select v-model="query.type" @change="$refs.table.refreshTable()">
-            <el-option value="a" label="A1"></el-option>
-            <el-option value="b" label="B"></el-option>
-          </el-select>
-        </el-form-item>
         <el-form-item label="字段A">
           <el-select v-model="query.type" @change="$refs.table.refreshTable()">
             <el-option value="a" label="A1"></el-option>
@@ -96,7 +90,13 @@
             <el-option value="b" label="B"></el-option>
           </el-select>
         </el-form-item>
-         <el-form-item label="字段A">
+        <el-form-item label="字段A">
+          <el-select v-model="query.type" @change="$refs.table.refreshTable()">
+            <el-option value="a" label="A1"></el-option>
+            <el-option value="b" label="B"></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="字段A">
           <el-select v-model="query.type" @change="$refs.table.refreshTable()">
             <el-option value="a" label="A1"></el-option>
             <el-option value="b" label="B"></el-option>
@@ -394,6 +394,21 @@ Vue.use(FxTable, {
   defaultOptions: {
     // toolbar: false,
   },
+
+  // axios: {
+  //   get() {
+  //     return new Promise((y, n) => {
+  //       y({
+  //         data: {
+  //           data: {
+  //             rows: [{}, {}, {}],
+  //             total: 10,
+  //           },
+  //         },
+  //       });
+  //     });
+  //   },
+  // },
 });
 
 export default {
@@ -473,6 +488,11 @@ export default {
 
         clickToSelect: true,
 
+        searchbar: false,
+        searchbarProps: {
+          show: false,
+        },
+
         // showSummary: true,
 
         // singleSelect: true,
@@ -544,14 +564,14 @@ export default {
         // toolbar: false
       },
 
-      actions: [
-        new Action({
-          name: "操作",
-          icon: "el-icon-apple",
-          category: "dropdown",
-          children: [new Action("add"), new Action("edit")],
-        }),
-      ],
+      // actions: [
+      //   new Action({
+      //     name: "操作",
+      //     icon: "el-icon-apple",
+      //     category: "dropdown",
+      //     children: [new Action("add"), new Action("edit")],
+      //   }),
+      // ],
 
       columns: [
         {

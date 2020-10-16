@@ -1,6 +1,6 @@
 <template>
   <div class="fx-searchbar">
-    <div class="fx-searchbar--form">
+    <div class="fx-searchbar--form" :style="formStyle">
       <el-form
         ref="form"
         inline
@@ -16,9 +16,9 @@
       <el-button
         size="small"
         type="primary"
-        icon="el-icon-check"
+        icon="el-icon-search"
         @click="confirm"
-        >确定</el-button
+        >搜索</el-button
       >
       <el-button
         size="small"
@@ -29,8 +29,11 @@
       >
       <el-button
         size="mini"
+        @click="$fxTable.toggleSearchbarSize"
         class="fx-searchbar--toggle"
-        icon="el-icon-arrow-up"
+        :icon="
+          'el-icon-arrow-' + ($fxTable.searchbarSize === 'max' ? 'up' : 'down')
+        "
       ></el-button>
     </div>
   </div>
@@ -65,6 +68,16 @@ export default {
     },
   },
 
+  computed: {
+    formStyle() {
+      return {
+        overflow: this.$fxTable.cOptions.searchbarProps.scrollable
+          ? "auto"
+          : "hidden",
+      };
+    },
+  },
+
   methods: {
     submit() {
       this.$emit("submit", this.model);
@@ -88,7 +101,6 @@ export default {
   flex-direction: column;
   .fx-searchbar--form {
     flex: 1;
-    overflow: auto;
     padding: 15px;
   }
   .fx-searchbar--handler {
@@ -99,7 +111,7 @@ export default {
     justify-content: center;
     text-align: center;
     position: relative;
-    background: #eee;
+    // background: #eee;
 
     .fx-searchbar--toggle {
       position: absolute;

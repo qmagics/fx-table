@@ -81,8 +81,9 @@
 
         <!-- 搜索栏 -->
         <div
+          ref="fxTableSearchbar"
           class="fx-table--searchbar"
-          v-if="$slots.superQuery"
+          v-if="cOptions.searchbar && $slots.superQuery"
           v-show="searchbarVisible"
           :style="searchbarStyle"
         >
@@ -102,7 +103,12 @@
         </div>
 
         <!-- 主体部分 -->
-        <div class="fx-table--table" v-loading="vLoading" :style="tableStyle">
+        <div
+          class="fx-table--table"
+          v-if="ready"
+          v-loading="vLoading"
+          :style="tableStyle"
+        >
           <el-table
             ref="table"
             :data="tableData"
@@ -258,6 +264,8 @@ export default {
     this.$emit("update:data", tableData);
 
     return {
+      ready: false,
+
       fullScreen: fullScreen,
 
       showAside: asideProps.show,
@@ -270,7 +278,9 @@ export default {
 
       // superSearch: false,
 
-      searchbarVisible: searchbarProps.visible,
+      searchbarVisible: searchbarProps.show,
+
+      searchbarSize: searchbarProps.size,
 
       tableData: tableData,
 
@@ -327,22 +337,22 @@ export default {
 
     query: {},
 
-    actions: Array,
+    // actions: Array,
   },
 
   provide() {
     return {
       $fxTable: this,
 
-      toggleSearchbarVisible: this.toggleSearchbarVisible,
+      // toggleSearchbarVisible: this.toggleSearchbarVisible,
 
-      refreshTable: this.refreshTable,
+      // refreshTable: this.refreshTable,
 
-      cOptions: this.cOptions,
+      // cOptions: this.cOptions,
 
-      searchModel: this.searchModel,
+      // searchModel: this.searchModel,
 
-      vColumns: this.vColumns,
+      // vColumns: this.vColumns,
     };
   },
 
@@ -400,9 +410,9 @@ export default {
       return this.$refs.table;
     },
 
-    cActions() {
-      return this.actions;
-    },
+    // cActions() {
+    //   return this.actions;
+    // },
 
     visibleColumns() {
       return this.vColumns.filter((c) => c.visible);
@@ -618,10 +628,15 @@ export default {
 
     searchbarStyle() {
       const { searchbarProps } = this.cOptions;
-      const { height, background } = searchbarProps;
+      const { minHeight, maxHeight, background } = searchbarProps;
 
       return {
-        height: getCssNumber(height),
+        height:
+          this.searchbarSize === "mini"
+            ? getCssNumber(minHeight)
+            : this.searchbarSize === "max"
+            ? getCssNumber(maxHeight)
+            : "auto",
         background,
       };
     },
@@ -630,15 +645,36 @@ export default {
       const {
         toolbar,
         toolbarProps,
+        searchbar,
+        searchbarProps,
         pagination,
         paginationProps,
       } = this.cOptions;
 
+      //工具栏高度
+      const toolbarHeight = toolbar ? getCssNumber(toolbarProps.height) : "0px";
+
+      //搜索栏高度
+      const searchbarHeight =
+        searchbar && this.searchbarVisible
+          ? getCssNumber(
+              this.searchbarSize === "mini"
+                ? searchbarProps.minHeight
+                : this.searchbarSize === "max"
+                ? searchbarProps.maxHeight
+                : 0
+            )
+          : "0px";
+
+      // console.log(this.$refs.fxTableSearchbar.clientHeight);
+
+      //分页栏高度
+      const paginationHeight = pagination
+        ? getCssNumber(paginationProps.height)
+        : "0px";
+
       return {
-        height: `calc(100% 
-        ${toolbar ? "- " + getCssNumber(toolbarProps.height) : ""} 
-        ${pagination ? "- " + getCssNumber(paginationProps.height) : ""}
-        )`,
+        height: `calc(100% - ${toolbarHeight} - ${searchbarHeight} - ${paginationHeight})`,
       };
     },
 
@@ -689,6 +725,24 @@ export default {
   },
 
   methods: {
+    //切换搜索栏大小
+    toggleSearchbarSize(size) {
+      if (size) {
+        return (this.searchbarSize = size);
+      }
+
+      this.searchbarSize === "mini"
+        ? (this.searchbarSize = "max")
+        : (this.searchbarSize = "mini");
+    },
+
+    //切换搜索栏显示隐藏
+    toggleSearchbarVisible(bl = null) {
+      const val = bl !== null ? bl : !this.searchbarVisible;
+
+      this.searchbarVisible = !this.searchbarVisible;
+    },
+
     //切换全屏显示
     toggleFullScreen() {
       this.fullScreen = !this.fullScreen;
@@ -709,13 +763,6 @@ export default {
     //用户点击高级搜索确认
     onSearchbarSubmit() {
       this.refreshTable();
-    },
-
-    //打开高级搜索面板
-    toggleSearchbarVisible(bl = null) {
-      const val = bl !== null ? bl : !this.searchbarVisible;
-
-      this.searchbarVisible = !this.searchbarVisible;
     },
 
     //搜索按钮点击
@@ -784,10 +831,9 @@ export default {
       this.vLoading = true;
 
       try {
-        const { data, status } = await axios[this.method.toLowerCase()](
-          this.cOptions.api,
-          this.queryParams
-        );
+        const { data } = await (Vue.__FxTable_axios || axios)[
+          this.method.toLowerCase()
+        ](this.cOptions.api, this.queryParams);
 
         const res = this.cOptions.resHandler(data);
 
@@ -991,6 +1037,8 @@ export default {
   },
 
   async mounted() {
+    this.ready = true;
+
     if (this.cOptions.api) {
       await this.getData();
     }

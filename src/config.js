@@ -93,7 +93,8 @@ export const DEFAULT_OPTIONS = {
     toolbar: true,
     //toolbar属性
     toolbarProps: {
-        layout: 'query,searchBtn -> searchbarToggle,actions,customActions,columnToggle,fullScreen',
+        // layout: 'query,searchBtn -> searchbarToggle,actions,customActions,columnToggle,fullScreen',
+        layout: 'query,searchBtn -> actions,columnToggle',
         height: 50
     },
 
@@ -106,9 +107,12 @@ export const DEFAULT_OPTIONS = {
     //是否有搜索栏
     searchbar: false,
     searchbarProps: {
-        visible: false,
-        height: 'auto',
+        show: false,
+        size: 'mini',
+        minHeight: 100,
+        maxHeight: 300,
         background: "#f7f7f7",
+        scrollable: false,
     },
 
     //是否有分页

@@ -40,8 +40,9 @@ const renderMap = {
       <el-button
         class="toolbar-item"
         vOn:click={toggleSearchbarVisible}
+        icon="el-icon-search"
       >
-        搜索栏
+        搜索
       </el-button>
     );
   },
@@ -67,7 +68,7 @@ const renderMap = {
   },
 
   //表格操作栏
-  actions(h) {
+  builtInActions(h) {
     const { cActions, runAction } = this.$fxTable;
 
     return cActions.map((action) => {
@@ -84,8 +85,8 @@ const renderMap = {
   },
 
   //自定义操作
-  customActions(h) {
-    return <div class="toolbar-item">{this.$fxTable.$slots.customActions}</div>;
+  actions(h) {
+    return <div class="toolbar-item">{this.$fxTable.$slots.actions}</div>;
   },
 
   //分隔符
