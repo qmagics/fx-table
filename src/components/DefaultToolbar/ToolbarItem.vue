@@ -21,7 +21,7 @@ const renderMap = {
   },
 
   //搜索按钮
-  searchBtn() {
+  searchBtn(h) {
     return (
       <el-button
         class="toolbar-item"

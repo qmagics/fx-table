@@ -68,7 +68,7 @@ module.exports = {
         hot: true,
         open: true,
         proxy: { // proxy URLs to backend development server
-            '/api': 'http://localhost:51969/'
+            '/api': 'http://localhost:3000/'
         },
     },
 

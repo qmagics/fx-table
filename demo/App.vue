@@ -252,6 +252,12 @@ Vue.use(FxTable, {
 
   //注册renderer
   presetColumnRenderers: {
+    TimeRenderer(h, context) {
+      return <span>{new Date(context.value).format()}</span>;
+    },
+    ThumbnailRenderer(h, context) {
+      return <el-image class="thumbnail" src={context.value} />;
+    },
     InputRenderer(h, context) {
       const { row, value, column } = context;
 
@@ -453,7 +459,8 @@ export default {
         },
 
         api:
-          "/api/Examinee?optionType=list&AdvanceEntranceExamId=734b9360-96f8-4f12-bea8-32c9747b271b",
+          // "/api/Examinee?optionType=list&AdvanceEntranceExamId=734b9360-96f8-4f12-bea8-32c9747b271b",
+          "/api/article/list",
 
         // background: "#fff",
 
@@ -505,8 +512,16 @@ export default {
 
         // pagination: false,
 
-        // resHandler(res){
-        //   return res.data.rows;
+        // resHandler() {
+        //   return {
+        //     data: {
+        //       data: {
+        //         rows: [{}, {}, {}, {}],
+        //         total: 20,
+        //       },
+        //     },
+        //   };
+        //   // return res.data.rows;
         // },
 
         // method: "get",
@@ -575,34 +590,28 @@ export default {
 
       columns: [
         {
-          prop: "xm",
-          label: "姓名",
-          width: 100,
-        },
-        {
-          prop: "PicUrl",
-          label: "照片",
-          width: 100,
+          label: "缩略图",
+          prop: "bannerUrl",
           align: "center",
-          render: (h, context) => (
-            <el-image
-              style="width:70px;height:70px;"
-              src={context.row.PicUrl}
-            ></el-image>
-          ),
+          minWidth: 140,
+          render: "ThumbnailRenderer",
         },
         {
-          prop: "PhoneNumber",
-          label: "手机号码",
-          width: 120,
+          label: "所属栏目",
+          prop: "column",
+          minWidth: 100,
+          formatter: (val) => val.name,ls
         },
         {
-          prop: "byxxmc",
-          label: "毕业学校",
+          label: "作者",
+          minWidth: 100,
+          prop: "author",
         },
         {
-          prop: "byzymc",
-          label: "毕业专业",
+          label: "发布时间",
+          prop: "publishAt",
+          minWidth: 100,
+          render: "TimeRenderer",
         },
       ],
     };
