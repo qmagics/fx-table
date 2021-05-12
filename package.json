@@ -42,7 +42,7 @@
     "element-resize-detector": "^1.2.1",
     "element-ui": "^2.13.1",
     "md5": "^2.2.1",
-    "merge": "^1.2.1",
+    "merge": "^2.1.1",
     "vue": "^2.6.11"
   },
   "__npminstall_done": "Wed Apr 22 2020 20:23:01 GMT+0800 (GMT+08:00)",
